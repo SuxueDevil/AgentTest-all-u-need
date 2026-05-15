@@ -47,6 +47,15 @@ export const DATASET_CATEGORIES = {
   'tool-calling': '工具调用能力',
 } as const
 
+/** 问题分类的显示名称 */
+export const QUESTION_CATEGORIES = {
+  reasoning: '推理',
+  coding: '编程',
+  qa: '问答',
+  translation: '翻译',
+  summarization: '摘要',
+} as const
+
 /** 难度等级的显示名称 */
 export const DIFFICULTY_LEVELS = {
   easy: '简单',
@@ -65,6 +74,7 @@ export const DIFFICULTY_LEVELS = {
 export const NAV_ITEMS = [
   { path: '/dashboard', label: '仪表盘', icon: 'LayoutDashboard' },
   { path: '/agents', label: 'Agent管理', icon: 'Bot' },
+  { path: '/questions', label: '题库管理', icon: 'Library' },
   { path: '/evaluation', label: '评测任务', icon: 'ClipboardCheck' },
   { path: '/datasets', label: '数据集', icon: 'Database' },
   { path: '/reports', label: '评测报告', icon: 'FileText' },

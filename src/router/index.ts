@@ -72,6 +72,12 @@ const routes: RouteRecordRaw[] = [
     meta: { title: '对比分析', icon: 'GitCompare', hidden: true },
   },
   {
+    path: '/questions',
+    name: 'Questions',
+    component: () => import('@views/question/QuestionListPage.vue'),
+    meta: { title: '题库管理', icon: 'Library' },
+  },
+  {
     path: '/datasets',
     name: 'Datasets',
     component: () => import('@views/evaluation/DatasetPage.vue'),

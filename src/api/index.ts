@@ -6,4 +6,5 @@
 export { agentApi } from './modules/agent'
 export { evaluationApi } from './modules/evaluation'
 export { dashboardApi } from './modules/dashboard'
+export { questionApi } from './modules/question'
 export * from './client'

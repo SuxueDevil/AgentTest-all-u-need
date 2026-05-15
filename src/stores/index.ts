@@ -6,3 +6,4 @@
 export { useAppStore } from './modules/app'
 export { useAgentStore } from './modules/agent'
 export { useEvaluationStore } from './modules/evaluation'
+export { useQuestionStore } from './modules/question'
