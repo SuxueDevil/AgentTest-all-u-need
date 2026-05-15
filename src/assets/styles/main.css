@@ -207,6 +207,19 @@
   .badge-info {
     @apply badge bg-ai-purple/20 text-ai-purple-light;
   }
+
+  /* ===== Form Input ===== */
+  .input-field {
+    @apply w-full rounded-lg border px-3 py-2 text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ai-purple/30;
+  }
+
+  :is(.dark) .input-field {
+    @apply bg-ai-surface border-ai-border text-white placeholder:text-gray-500;
+  }
+
+  html:not(.dark) .input-field {
+    @apply bg-white border-gray-300 text-gray-900 placeholder:text-gray-400;
+  }
 }
 
 @layer utilities {
