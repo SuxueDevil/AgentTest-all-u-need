@@ -136,18 +136,6 @@ async function handleTestConnection() {
             <span class="text-gray-400 dark:text-gray-500">更新时间</span>
             <span class="text-gray-700 dark:text-gray-300">{{ agentStore.currentAgent.updatedAt }}</span>
           </div>
-          <div class="flex justify-between">
-            <span class="text-gray-400 dark:text-gray-500">标签</span>
-            <div class="flex gap-1 flex-wrap justify-end">
-              <span
-                v-if="agentStore.currentAgent.tags?.length"
-                v-for="tag in agentStore.currentAgent.tags"
-                :key="tag"
-                class="text-xs bg-gray-100 dark:bg-ai-surface text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full"
-              >{{ tag }}</span>
-              <span v-else class="text-gray-400 dark:text-gray-500">-</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -21,7 +21,6 @@ export interface Agent {
   authType: string
   /** 鉴权凭证（仅创建/编辑表单填写，列表和详情不返回） */
   authCredential: string
-  tags: string[]
   createdAt: string
   updatedAt: string
 }

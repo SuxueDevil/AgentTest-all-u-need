@@ -1,6 +1,6 @@
 <!-- Agent 列表页 — 搜索 / 分页 / 新建 / 编辑 / 删除 -->
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Plus, Search, Pencil, Trash2 } from 'lucide-vue-next'
 import { useAgentStore } from '@stores'
@@ -24,10 +24,15 @@ const editTarget = ref<Agent | null>(null)
 
 // ==================== 表单状态 ====================
 
-/** 表单绑定数据，tags 用逗号分隔的字符串方便输入，提交时再转为数组 */
+/** 表单绑定数据 */
 const form = ref({
   name: '', description: '', model: '', type: 'llm',
-  endpointUrl: '', authType: 'none', authCredential: '', tags: '',
+  endpointUrl: '', authType: 'none', authCredential: '',
+})
+/** 鉴权凭证 placeholder，custom 模式显示 JSON 示例 */
+const authPlaceholder = computed(() => {
+  if (form.value.authType === 'custom') return `{"x-access-token":"tok","X-App-Code":"123"}`
+  return editTarget.value ? '留空则不修改' : '凭证'
 })
 /** 提交进行中标识，防止重复提交 */
 const submitting = ref(false)
@@ -63,11 +68,11 @@ onMounted(() => {
 function openCreate() {
   editTarget.value = null
   form.value = { name: '', description: '', model: '', type: 'llm',
-    endpointUrl: '', authType: 'none', authCredential: '', tags: '' }
+    endpointUrl: '', authType: 'none', authCredential: '' }
   showCreateDialog.value = true
 }
 
-/** 打开编辑弹窗 — 用 Agent 数据填充表单，tags 数组转逗号分隔字符串 */
+/** 打开编辑弹窗 — 用 Agent 数据填充表单 */
 function openEdit(agent: Agent) {
   editTarget.value = agent
   form.value = {
@@ -78,7 +83,6 @@ function openEdit(agent: Agent) {
     endpointUrl: agent.endpointUrl || '',
     authType: agent.authType || 'none',
     authCredential: '',                                         // 编辑时不回填凭证
-    tags: agent.tags?.join(', ') || '',
   }
   showCreateDialog.value = true
 }
@@ -89,10 +93,7 @@ function confirmDelete(agent: Agent) {
   showDeleteDialog.value = true
 }
 
-/**
- * 提交表单 — 新建和编辑共用。
- * tags 字符串按逗号分割为数组，空字符串过滤掉。
- */
+/** 提交表单 — 新建和编辑共用 */
 async function handleSubmit() {
   submitting.value = true
   try {
@@ -104,9 +105,6 @@ async function handleSubmit() {
       endpointUrl: form.value.endpointUrl,
       authType: form.value.authType,
       authCredential: form.value.authCredential,
-      tags: form.value.tags
-        ? form.value.tags.split(',').map(t => t.trim()).filter(Boolean)
-        : [],
     }
     if (editTarget.value) {
       await agentStore.updateAgent(editTarget.value.id, payload)
@@ -280,17 +278,13 @@ function onPageChange(page: number) {
                 <option value="bearer">Bearer Token</option>
                 <option value="api_key">API Key</option>
                 <option value="basic">Basic Auth</option>
+                <option value="custom">自定义Header</option>
               </select>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">鉴权凭证</label>
-              <input v-model="form.authCredential" class="input-field" :placeholder="editTarget ? '留空则不修改' : '凭证'" />
+              <input v-model="form.authCredential" class="input-field" :placeholder="authPlaceholder" />
             </div>
-          </div>
-          <!-- 标签 -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">标签（逗号分隔）</label>
-            <input v-model="form.tags" class="input-field" placeholder="LLM, 推理, 企业级" />
           </div>
         </div>
         <!-- 按钮 -->
