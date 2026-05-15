@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.vite-inspect/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Claude
+.claude/
+
+# Playwright MCP
+.playwright-mcp/
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Screenshots / temp images
+*.jpeg
+*.jpg
+*.png
+
+# Logs
+*.log
+npm-debug.log*

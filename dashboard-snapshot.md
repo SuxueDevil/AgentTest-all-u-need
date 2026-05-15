@@ -1,0 +1,143 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]: Test-All-u-Need
+    - button "切换夜间模式" [ref=e7] [cursor=pointer]:
+      - img [ref=e8]
+  - main [ref=e10]:
+    - generic [ref=e53]:
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - heading "仪表盘" [level=1] [ref=e56]
+          - paragraph [ref=e57]: Agent评测概览与实时数据
+        - button "新建评测" [ref=e58] [cursor=pointer]:
+          - img [ref=e59]
+          - text: 新建评测
+      - generic [ref=e61]:
+        - generic [ref=e62] [cursor=pointer]:
+          - img [ref=e64]
+          - generic [ref=e67]:
+            - paragraph [ref=e68]: Agent总数
+            - paragraph [ref=e69]: "24"
+            - paragraph [ref=e70]: 较上月 +3
+        - generic [ref=e71] [cursor=pointer]:
+          - img [ref=e73]
+          - generic [ref=e75]:
+            - paragraph [ref=e76]: 进行中评测
+            - paragraph [ref=e77]: "8"
+            - paragraph [ref=e78]: 实时运行中
+        - generic [ref=e79] [cursor=pointer]:
+          - img [ref=e81]
+          - generic [ref=e85]:
+            - paragraph [ref=e86]: 已完成评测
+            - paragraph [ref=e87]: "156"
+            - paragraph [ref=e88]: 较上周 +12%
+        - generic [ref=e89] [cursor=pointer]:
+          - img [ref=e91]
+          - generic [ref=e94]:
+            - paragraph [ref=e95]: 平均得分
+            - paragraph [ref=e96]: 87.4%
+            - paragraph [ref=e97]: 整体稳定
+      - generic [ref=e98]:
+        - generic [ref=e100] [cursor=pointer]: 评测趋势 (近30天)
+        - generic [ref=e105] [cursor=pointer]:
+          - generic [ref=e106]: Agent排行榜
+          - generic [ref=e108]:
+            - generic [ref=e109]:
+              - generic [ref=e110]: "1"
+              - generic [ref=e111]: GPT-4o
+              - generic [ref=e112]: 95.0%
+              - img [ref=e113]
+            - generic [ref=e114]:
+              - generic [ref=e115]: "2"
+              - generic [ref=e116]: Claude Opus 4
+              - generic [ref=e117]: 91.0%
+              - img [ref=e118]
+            - generic [ref=e120]:
+              - generic [ref=e121]: "3"
+              - generic [ref=e122]: Gemini Ultra
+              - generic [ref=e123]: 87.0%
+              - img [ref=e124]
+            - generic [ref=e126]:
+              - generic [ref=e127]: "4"
+              - generic [ref=e128]: DeepSeek-V3
+              - generic [ref=e129]: 83.0%
+              - img [ref=e130]
+            - generic [ref=e131]:
+              - generic [ref=e132]: "5"
+              - generic [ref=e133]: Qwen-Max
+              - generic [ref=e134]: 79.0%
+              - img [ref=e135]
+            - generic [ref=e137]:
+              - generic [ref=e138]: "6"
+              - generic [ref=e139]: Claude Sonnet
+              - generic [ref=e140]: 75.0%
+              - img [ref=e141]
+        - generic [ref=e143] [cursor=pointer]:
+          - generic [ref=e144]: 最近活动
+          - generic [ref=e146]:
+            - generic [ref=e147]:
+              - generic [ref=e150]:
+                - paragraph [ref=e151]: Claude Opus 4
+                - paragraph [ref=e152]: 推理能力评测
+              - generic [ref=e153]: 2分钟前
+            - generic [ref=e154]:
+              - generic [ref=e157]:
+                - paragraph [ref=e158]: GPT-4o
+                - paragraph [ref=e159]: 代码生成评测
+              - generic [ref=e160]: 5分钟前
+            - generic [ref=e161]:
+              - generic [ref=e164]:
+                - paragraph [ref=e165]: DeepSeek-V3
+                - paragraph [ref=e166]: 工具调用评测
+              - generic [ref=e167]: 12分钟前
+            - generic [ref=e168]:
+              - generic [ref=e171]:
+                - paragraph [ref=e172]: Gemini Ultra
+                - paragraph [ref=e173]: 多语言翻译评测
+              - generic [ref=e174]: 25分钟前
+            - generic [ref=e175]:
+              - generic [ref=e178]:
+                - paragraph [ref=e179]: Qwen-Max
+                - paragraph [ref=e180]: 问答能力评测
+              - generic [ref=e181]: 1小时前
+        - generic [ref=e182] [cursor=pointer]:
+          - generic [ref=e183]: 快捷操作
+          - generic [ref=e185]:
+            - button "新建Agent" [ref=e186]:
+              - img [ref=e188]
+              - text: 新建Agent
+            - button "开始评测" [ref=e190]:
+              - img [ref=e192]
+              - text: 开始评测
+            - button "查看报告" [ref=e194]:
+              - img [ref=e196]
+              - text: 查看报告
+            - button "对比分析" [ref=e198]:
+              - img [ref=e200]
+              - text: 对比分析
+            - button "管理数据集" [ref=e202]:
+              - img [ref=e204]
+              - text: 管理数据集
+            - button "系统设置" [ref=e206]:
+              - img [ref=e208]
+              - text: 系统设置
+  - navigation [ref=e11]:
+    - generic [ref=e12]:
+      - button "仪表盘" [ref=e13] [cursor=pointer]:
+        - img [ref=e15]
+        - generic [ref=e20]: 仪表盘
+      - button "Agent管理" [ref=e21] [cursor=pointer]:
+        - img [ref=e23]
+        - generic [ref=e26]: Agent管理
+      - button "评测任务" [ref=e27] [cursor=pointer]:
+        - img [ref=e29]
+        - generic [ref=e33]: 评测任务
+      - button "数据集" [ref=e34] [cursor=pointer]:
+        - img [ref=e36]
+        - generic [ref=e40]: 数据集
+      - button "评测报告" [ref=e41] [cursor=pointer]:
+        - img [ref=e43]
+        - generic [ref=e46]: 评测报告
+      - button "系统设置" [ref=e47] [cursor=pointer]:
+        - img [ref=e49]
+        - generic [ref=e52]: 系统设置
