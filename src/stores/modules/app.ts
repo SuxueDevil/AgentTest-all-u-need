@@ -81,5 +81,11 @@ export const useAppStore = defineStore('app', () => {
    * 相当于 Java 类中 public field + public method，
    * 但 theme 是响应式的（修改会自动通知所有订阅者）。
    */
-  return { theme, setTheme }
+  const sidebarCollapsed = ref(false)
+
+  function toggleSidebar() {
+    sidebarCollapsed.value = !sidebarCollapsed.value
+  }
+
+  return { theme, setTheme, sidebarCollapsed, toggleSidebar }
 })
