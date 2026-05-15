@@ -61,7 +61,6 @@ function getIcon(name: string): Component {
     <nav class="flex-1 space-y-1 overflow-y-auto p-3">
       <div v-for="item in NAV_ITEMS" :key="item.path">
         <button
-          v-if="item.path === '/comparison' ? false : true"
           class="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200"
           :class="
             isActive(item.path)
