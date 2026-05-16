@@ -52,7 +52,8 @@ const editTarget = ref<Agent | null>(null)
 /** 表单绑定数据 */
 const form = ref({
   name: '', description: '', model: '', type: 'llm',
-  endpointUrl: '', authType: 'none', authCredential: '',
+  endpointUrl: '', requestBody: '', responseContentPath: '',
+  authType: 'none', authCredential: '',
 })
 /** 鉴权凭证 placeholder，custom 模式显示 JSON 示例 */
 const authPlaceholder = computed(() => {
@@ -100,7 +101,7 @@ onMounted(() => {
 function openCreate() {
   editTarget.value = null
   form.value = { name: '', description: '', model: '', type: 'llm',
-    endpointUrl: '', authType: 'none', authCredential: '' }
+    endpointUrl: '', requestBody: '', responseContentPath: '', authType: 'none', authCredential: '' }
   showCreateDialog.value = true
 }
 
@@ -116,6 +117,8 @@ function openEdit(agent: Agent) {
     model: agent.model || '',
     type: agent.type,
     endpointUrl: agent.endpointUrl || '',
+    requestBody: agent.requestBody || '',
+    responseContentPath: agent.responseContentPath || '',
     authType: agent.authType || 'none',
     authCredential: '',                                         // 编辑时不回填凭证
   }
@@ -141,6 +144,8 @@ async function handleSubmit() {
       model: form.value.model,
       type: form.value.type as Agent['type'],
       endpointUrl: form.value.endpointUrl,
+      requestBody: form.value.requestBody,
+      responseContentPath: form.value.responseContentPath,
       authType: form.value.authType,
       authCredential: form.value.authCredential,
     }
@@ -312,6 +317,15 @@ function onPageChange(page: number) {
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">API Endpoint</label>
             <input v-model="form.endpointUrl" class="input-field" placeholder="https://api.example.com/v1/chat" />
+          </div>
+          <!-- 请求模板 + 响应路径 -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">请求模板 JSON <span class="text-xs text-gray-400">（&#123;&#123;messages&#125;&#125; 占位符）</span></label>
+            <textarea v-model="form.requestBody" class="input-field" rows="4" placeholder='留空则使用默认 OpenAI 格式：{"messages":[...],"max_tokens":1024}' />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">响应提取路径</label>
+            <input v-model="form.responseContentPath" class="input-field" placeholder="留空默认 choices[0].message.content" />
           </div>
           <!-- 鉴权方式 + 凭证 -->
           <div class="grid grid-cols-2 gap-3">

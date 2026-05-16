@@ -17,6 +17,10 @@ export interface Agent {
   status: AgentStatus
   /** Agent API 端点 URL */
   endpointUrl: string
+  /** 请求模板 JSON，{{messages}} 占位符 */
+  requestBody: string
+  /** 响应内容提取路径，如 choices[0].message.content */
+  responseContentPath: string
   /** 鉴权方式（不含凭证值） */
   authType: string
   /** 鉴权凭证（仅创建/编辑表单填写，列表和详情不返回） */
