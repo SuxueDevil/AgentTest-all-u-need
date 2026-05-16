@@ -38,39 +38,39 @@ export const useAppStore = defineStore('app', () => {
    *   setItem(key, value) → 写入
    *   数据持久化在浏览器中，关闭页面后不丢失
    */
-  const theme = ref<'dark' | 'light'>(
-    (localStorage.getItem('theme') as 'dark' | 'light') || 'light'
+  const theme = ref<'dark' | 'light' | 'dusk'>(
+    (localStorage.getItem('theme') as 'dark' | 'light' | 'dusk') || 'dark'
   )
 
-  /**
-   * 应用主题到 DOM
-   * ---------------------------------------------------------------------------
-   * 通过操控 <html> 的 class 和 <body> 的 class 来切换主题。
-   * Tailwind CSS 的 dark: 前缀就是靠 <html class="dark"> 来触发的。
-   */
-  function applyTheme(t: 'dark' | 'light') {
+  /** 应用主题到 <html> class，触发 Tailwind dark: 变体和黄昏覆盖 */
+  function applyTheme(t: 'dark' | 'light' | 'dusk') {
     const root = document.documentElement
-    if (t === 'dark') {
-      root.classList.add('dark')
+    root.classList.remove('dark', 'dusk')
+    document.body.classList.remove('bg-ai-surface', 'text-white', 'bg-gray-100', 'text-gray-900')
+
+    if (t === 'dark' || t === 'dusk') {
+      root.classList.add('dark')              // 触发 Tailwind dark: 变体
+      if (t === 'dusk') root.classList.add('dusk')  // 叠加黄昏覆盖
       document.body.classList.add('bg-ai-surface', 'text-white')
-      document.body.classList.remove('bg-gray-100', 'text-gray-900')
     } else {
-      root.classList.remove('dark')
       document.body.classList.add('bg-gray-100', 'text-gray-900')
-      document.body.classList.remove('bg-ai-surface', 'text-white')
     }
   }
 
-  /**
-   * 切换主题 — 同时更新内存状态和本地持久化
-   */
-  function setTheme(t: 'dark' | 'light') {
+  function setTheme(t: 'dark' | 'light' | 'dusk') {
     theme.value = t
     localStorage.setItem('theme', t)
     applyTheme(t)
   }
 
-  // 初始化时应用一次主题
+  /** 循环切换: dark → dusk → light → dark */
+  function cycleTheme() {
+    const next: Record<string, 'dark' | 'light' | 'dusk'> = {
+      dark: 'dusk', dusk: 'light', light: 'dark',
+    }
+    setTheme(next[theme.value])
+  }
+
   applyTheme(theme.value)
 
   /**
@@ -87,5 +87,5 @@ export const useAppStore = defineStore('app', () => {
     sidebarCollapsed.value = !sidebarCollapsed.value
   }
 
-  return { theme, setTheme, sidebarCollapsed, toggleSidebar }
+  return { theme, setTheme, cycleTheme, sidebarCollapsed, toggleSidebar }
 })

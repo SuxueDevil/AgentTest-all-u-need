@@ -20,6 +20,9 @@ import {
   Settings,
   PanelRightOpen,
   PanelLeftClose,
+  Sun,
+  Moon,
+  Sunset,
 } from 'lucide-vue-next'
 import type { Component } from 'vue'
 
@@ -89,6 +92,23 @@ function getIcon(name: string): Component {
         </button>
       </div>
     </nav>
+
+    <!-- 主题切换 -->
+    <div class="border-t border-ai-border p-3">
+      <button
+        class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-white/5 hover:text-gray-200"
+        @click="appStore.cycleTheme()"
+      >
+        <Sun v-if="appStore.theme === 'light'" :size="18" class="text-amber-400" />
+        <Moon v-else-if="appStore.theme === 'dark'" :size="18" class="text-indigo-400" />
+        <Sunset v-else :size="18" class="text-orange-400" />
+        <transition name="fade">
+          <span v-if="!appStore.sidebarCollapsed">
+            {{ appStore.theme === 'light' ? '亮色模式' : appStore.theme === 'dark' ? '暗色模式' : '黄昏模式' }}
+          </span>
+        </transition>
+      </button>
+    </div>
 
     <!-- 底部折叠/展开按钮 -->
     <div class="border-t border-ai-border p-3">

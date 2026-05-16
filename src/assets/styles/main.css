@@ -9,6 +9,11 @@
     box-sizing: border-box;
   }
 
+  /* ===== 黄昏主题 — 暖橙金色系 ===== */
+  html.dusk {
+    --dusk-bg: #1C1408;
+  }
+
   html {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
@@ -258,4 +263,98 @@
     0%   { opacity: 0; }
     100% { opacity: 1; }
   }
+}
+
+/* ===== 黄昏主题覆盖 — 暖橙金黄 ===== */
+html.dusk body {
+  background: #1C1408;
+}
+html.dusk body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse at 30% 20%, rgba(245,158,11,0.08), transparent 50%),
+              radial-gradient(ellipse at 70% 80%, rgba(249,115,22,0.06), transparent 50%);
+  pointer-events: none;
+}
+html.dusk .dark\:bg-ai-card,
+html.dusk .dark\:bg-ai-surface {
+  background: #2A1C0A;
+}
+html.dusk .dark\:bg-ai-surface {
+  background: #221608;
+}
+html.dusk .dark\:border-ai-border {
+  border-color: #3D2A12;
+}
+html.dusk .dark\:text-gray-400 {
+  color: #B45309;
+}
+html.dusk .dark\:text-gray-300 {
+  color: #FDE68A;
+}
+html.dusk .dark\:text-white {
+  color: #FEF3C7;
+}
+html.dusk .dark\:hover\:text-white:hover {
+  color: #F59E0B;
+}
+html.dusk .dark\:hover\:border-ai-purple\/30:hover,
+html.dusk .dark\:hover\:border-ai-purple\/50:hover {
+  border-color: rgba(245,158,11,0.5);
+}
+html.dusk .dark\:hover\:text-ai-purple:hover {
+  color: #F59E0B;
+}
+html.dusk .dark\:text-ai-purple-light {
+  color: #FDE68A;
+}
+html.dusk .dark\:bg-ai-purple\/20 {
+  background: rgba(245,158,11,0.2);
+}
+html.dusk .dark\:bg-ai-purple\/5 {
+  background: rgba(245,158,11,0.08);
+}
+html.dusk .dark\:border-ai-purple\/20 {
+  border-color: rgba(245,158,11,0.2);
+}
+html.dusk .bg-ai-purple {
+  background: #F59E0B;
+}
+html.dusk .bg-ai-purple\/5 {
+  background: rgba(245,158,11,0.08);
+}
+html.dusk .border-ai-purple\/20 {
+  border-color: rgba(245,158,11,0.2);
+}
+html.dusk .text-ai-purple {
+  color: #F59E0B;
+}
+html.dusk .dark\:text-ai-purple {
+  color: #F59E0B;
+}
+html.dusk .btn-secondary {
+  border-color: #3D2A12;
+  background: rgba(42,28,10,0.8);
+  color: #FDE68A;
+}
+html.dusk .btn-secondary:hover {
+  border-color: rgba(245,158,11,0.5);
+  color: #F59E0B;
+}
+html.dusk .bg-glass-light {
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(245,158,11,0.1), transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(249,115,22,0.08), transparent 50%),
+    #1C1408;
+}
+html.dusk .stat-value {
+  background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+html.dusk .dark\:shadow-\[0_8px_32px_rgba\(124\,58\,237\,0\.15\)\] {
+  box-shadow: 0 8px 32px rgba(245,158,11,0.15);
 }
