@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import type { Dataset } from '@types'
-
-const datasets = ref<Dataset[]>([])
+const datasets = ref<any[]>([])
 
 const columns = [
   { key: 'name', label: '数据集名称', width: '2fr' },
