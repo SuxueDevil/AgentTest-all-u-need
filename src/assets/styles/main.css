@@ -54,7 +54,6 @@
     background: #3D3D5A;
   }
 
-  /* Light mode scrollbar */
   html:not(.dark) ::-webkit-scrollbar-thumb {
     background: #CBD5E1;
     border-radius: 3px;
@@ -66,7 +65,7 @@
 }
 
 @layer components {
-  /* ===== Glass Card ===== */
+  /* ===== Glass Card — 毛玻璃卡片 ===== */
   .glass-card {
     @apply rounded-2xl border backdrop-blur-lg transition-all duration-300;
     border-color: rgba(255, 255, 255, 0.1);
@@ -100,7 +99,7 @@
     box-shadow: 0 12px 40px rgba(124, 58, 237, 0.12);
   }
 
-  /* ===== Bento Card ===== */
+  /* ===== Bento Card — Bento 布局卡片 ===== */
   .bento-card {
     @apply rounded-bento border p-6 transition-all duration-300;
     border-color: rgba(255, 255, 255, 0.1);
@@ -133,7 +132,7 @@
     box-shadow: 0 12px 40px rgba(124, 58, 237, 0.10);
   }
 
-  /* ===== Stat Value ===== */
+  /* ===== Stat Value — 渐变色统计数字 ===== */
   .stat-value {
     font-family: 'Space Grotesk', system-ui, sans-serif;
     @apply text-3xl font-bold;
@@ -150,26 +149,34 @@
     background-clip: text;
   }
 
-  /* ===== Buttons ===== */
+  /** ──────────────── 按钮样式 ────────────────
+   * btn-primary:   主操作 — 白玻璃质感（页面 CTA / 弹窗确认）
+   * btn-secondary: 次要操作 — 灰底灰框毛玻璃（取消 / 返回 / 搜索）
+   */
+
   .btn-primary {
     @apply inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200 active:scale-95;
   }
 
+  /* 浅色 — 半透明白底 + 微弱阴影 */
   html:not(.dark) .btn-primary {
     @apply text-gray-800 border border-white/60;
     background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.25));
     box-shadow: 0 1px 3px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.7);
   }
 
+  /* 浅色悬停 — 提亮背景 + 阴影加深 */
   html:not(.dark) .btn-primary:hover {
     background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
     box-shadow: 0 2px 6px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8);
   }
 
+  /* 深色 — 黑色半透明底 + 白字 */
   :is(.dark) .btn-primary {
     @apply bg-black/25 text-white border border-white/10 shadow-sm;
   }
 
+  /* 深色悬停 — 加深底色 */
   :is(.dark) .btn-primary:hover {
     @apply bg-black/40 border-white/20;
   }
@@ -178,16 +185,18 @@
     @apply inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium transition-all duration-200;
   }
 
+  /* 深色 — 深色底 + 灰字，悬停变紫 */
   :is(.dark) .btn-secondary {
     @apply border-ai-border bg-ai-card text-gray-300 hover:border-ai-purple/30 hover:text-white;
   }
 
+  /* 浅色 — 半透明白底 + 灰字毛玻璃，悬停边框变紫 */
   html:not(.dark) .btn-secondary {
     @apply border-gray-300 bg-white/60 text-gray-700 hover:border-ai-purple/50 hover:text-ai-purple;
     backdrop-filter: blur(8px);
   }
 
-  /* ===== Badges ===== */
+  /* ===== Badges — 状态标签 ===== */
   .badge {
     @apply inline-flex items-center rounded-lg px-2 py-0.5 text-xs font-medium;
   }
@@ -208,7 +217,7 @@
     @apply badge bg-ai-purple/20 text-ai-purple-light;
   }
 
-  /* ===== Form Input ===== */
+  /* ===== Form Input — 输入框 / 下拉框 / 文本域 ===== */
   .input-field {
     @apply w-full rounded-lg border px-3 py-2 text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ai-purple/30;
   }
@@ -236,27 +245,17 @@
   }
 
   @keyframes glow {
-    0% {
-      box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
-    }
-    100% {
-      box-shadow: 0 0 40px rgba(124, 58, 237, 0.6);
-    }
+    0%   { box-shadow: 0 0 20px rgba(124, 58, 237, 0.3); }
+    100% { box-shadow: 0 0 40px rgba(124, 58, 237, 0.6); }
   }
 
   @keyframes slideUp {
-    0% {
-      transform: translateY(20px);
-      opacity: 0;
-    }
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
+    0%   { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0);   opacity: 1; }
   }
 
   @keyframes fadeIn {
-    0% { opacity: 0; }
+    0%   { opacity: 0; }
     100% { opacity: 1; }
   }
 }
