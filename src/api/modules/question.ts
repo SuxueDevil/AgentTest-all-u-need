@@ -49,4 +49,9 @@ export const questionApi = {
   exportFile(format: 'csv' | 'json' = 'json') {
     return `/api/questions/export?format=${format}`
   },
+
+  /** POST /api/questions/generate — AI 生成题目 */
+  generate(params: { category: string; difficulty: string; questionType: string; count: number }) {
+    return post<Question[]>('/questions/generate', params)
+  },
 }

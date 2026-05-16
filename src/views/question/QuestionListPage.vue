@@ -1,7 +1,7 @@
 <!-- 题库列表页 — 搜索 / 筛选 / 分页 / 新建 / 编辑 / 删除 / 批量删除 / 导入导出 -->
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { Plus, Search, Pencil, Trash2, Upload, Download, X } from 'lucide-vue-next'
+import { Plus, Search, Pencil, Trash2, Upload, Download, X, Sparkles } from 'lucide-vue-next'
 import { useQuestionStore } from '@stores'
 import { questionApi } from '@api'
 import type { Question, QuestionCategory, DifficultyLevel, QuestionType, Turn } from '@types'
@@ -32,6 +32,11 @@ const deleteTarget = ref<Question | null>(null)
 /** 批量模式删除多选 */
 const deleteTargets = ref<number[]>([])
 const editTarget = ref<Question | null>(null)
+
+/** AI 生成弹窗 */
+const showGenerateDialog = ref(false)
+const generating = ref(false)
+const genForm = ref({ category: 'reasoning', difficulty: 'medium', questionType: 'single', count: 5 })
 
 // ==================== 表单状态 ====================
 
@@ -189,6 +194,14 @@ function removeTurn(index: number) {
 // ==================== 导入导出 ====================
 
 /** 触发文件选择 */
+async function handleGenerate() {
+  generating.value = true
+  try {
+    await questionStore.generateQuestions(genForm.value)
+    showGenerateDialog.value = false
+  } finally { generating.value = false }
+}
+
 function openImport() {
   importResult.value = null
   showImportDialog.value = true
@@ -260,6 +273,10 @@ const deleteMessage = computed(() => {
         <button class="btn-secondary text-sm" @click="handleExport('csv')">
           <Download :size="14" />
           导出
+        </button>
+        <button class="btn-secondary text-sm" @click="showGenerateDialog = true">
+          <Sparkles :size="14" />
+          AI 生成
         </button>
         <button class="btn-secondary" @click="openCreate">
           <Plus :size="16" />
@@ -475,6 +492,46 @@ const deleteMessage = computed(() => {
           <button class="btn-secondary" @click="showImportDialog = false">关闭</button>
           <button class="btn-primary" :disabled="submitting" @click="handleImport">
             {{ submitting ? '导入中...' : '上传并导入' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI 生成弹窗 -->
+    <div v-if="showGenerateDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="showGenerateDialog = false">
+      <div class="bg-white dark:bg-ai-card rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
+        <h2 class="text-lg font-bold flex items-center gap-2"><Sparkles :size="20" class="text-ai-purple" /> AI 生成题目</h2>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">分类</label>
+            <select v-model="genForm.category" class="input-field text-sm">
+              <option v-for="(label, key) in categoryLabels" :key="key" :value="key">{{ label }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">难度</label>
+            <select v-model="genForm.difficulty" class="input-field text-sm">
+              <option v-for="(label, key) in difficultyLabels" :key="key" :value="key">{{ label }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">类型</label>
+            <select v-model="genForm.questionType" class="input-field text-sm">
+              <option value="single">单轮</option>
+              <option value="multi">多轮</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">数量</label>
+            <select v-model.number="genForm.count" class="input-field text-sm">
+              <option v-for="n in [1,3,5,10,20]" :key="n" :value="n">{{ n }} 道</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 pt-2">
+          <button class="btn-secondary" @click="showGenerateDialog = false">取消</button>
+          <button class="btn-secondary" :disabled="generating" @click="handleGenerate">
+            {{ generating ? '生成中...' : '生成' }}
           </button>
         </div>
       </div>

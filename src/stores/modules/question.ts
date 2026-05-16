@@ -77,8 +77,14 @@ export const useQuestionStore = defineStore('question', () => {
     await fetchQuestions()
   }
 
+  async function generateQuestions(params: { category: string; difficulty: string; questionType: string; count: number }) {
+    await questionApi.generate(params)
+    await fetchQuestions()
+  }
+
   return {
     questions, total, loading, queryParams,
     fetchQuestions, createQuestion, updateQuestion, deleteQuestion, batchDeleteQuestions,
+    generateQuestions,
   }
 })
