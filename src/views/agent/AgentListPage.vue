@@ -11,6 +11,25 @@ import ConfirmDialog from '@components/common/ConfirmDialog.vue'
 const router = useRouter()
 const agentStore = useAgentStore()
 
+/** 根据 Agent 名称生成唯一色相（0~360），同一名称始终同一色调 */
+function getAgentHue(name: string): number {
+  let hash = 0
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  return Math.abs(hash) % 360
+}
+
+/** 根据色相生成淡彩渐变背景，半透明让底色透出 */
+function getAvatarGradient(hue: number) {
+  return `linear-gradient(135deg, hsla(${hue},65%,82%,0.55), hsla(${hue},55%,94%,0.45))`
+}
+
+/** 根据色相生成极淡边框 */
+function getAvatarBorder(hue: number) {
+  return `1px solid hsla(${hue},50%,70%,0.15)`
+}
+
 // ==================== 弹窗状态 ====================
 
 /** 新建/编辑弹窗是否可见 */
@@ -182,8 +201,14 @@ function onPageChange(page: number) {
       <!-- 名称列: 首字母头像 + 名称 -->
       <template #cell-name="{ row }: { row: Agent }">
         <div class="flex items-center gap-2">
-          <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-ai-purple to-ai-cyan">
-            <span class="text-xs font-bold text-white">{{ row.name.charAt(0) }}</span>
+          <div
+            class="agent-icon-badge"
+            :style="{
+              background: getAvatarGradient(getAgentHue(row.name)),
+              border: getAvatarBorder(getAgentHue(row.name)),
+            }"
+          >
+            <span class="agent-icon-text">{{ row.name.charAt(0) }}</span>
           </div>
           <span class="font-medium text-gray-700 dark:text-gray-200">{{ row.name }}</span>
         </div>
@@ -307,3 +332,23 @@ function onPageChange(page: number) {
     />
   </div>
 </template>
+
+<style scoped>
+/* Agent 首字母图标 — 每个Agent根据名称生成唯一色调的淡彩渐变 */
+.agent-icon-badge {
+  display: flex;
+  flex-shrink: 0;
+  height: 1.75rem;
+  width: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.agent-icon-text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1E3A5F;
+}
+</style>

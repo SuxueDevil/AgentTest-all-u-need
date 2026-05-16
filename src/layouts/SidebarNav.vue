@@ -5,7 +5,7 @@ import { NAV_ITEMS } from '@constants'
 import {
   LayoutDashboard,
   Bot,
-  Library,
+  BookOpen,
   ClipboardCheck,
   Database,
   FileText,
@@ -22,7 +22,7 @@ const appStore = useAppStore()
 const iconMap: Record<string, Component> = {
   LayoutDashboard,
   Bot,
-  Library,
+  BookOpen,
   ClipboardCheck,
   Database,
   FileText,

@@ -75,7 +75,7 @@ const routes: RouteRecordRaw[] = [
     path: '/questions',
     name: 'Questions',
     component: () => import('@views/question/QuestionListPage.vue'),
-    meta: { title: '题库管理', icon: 'Library' },
+    meta: { title: '题库管理', icon: 'BookOpen' },
   },
   {
     path: '/datasets',
