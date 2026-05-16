@@ -18,8 +18,9 @@ const appStore = useAppStore()
 .page-animate {
   animation: page-in 0.6s ease;
 }
+
 @keyframes page-in {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(0.5px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 </style>
