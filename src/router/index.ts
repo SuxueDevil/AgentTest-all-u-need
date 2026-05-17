@@ -44,6 +44,12 @@ const routes: RouteRecordRaw[] = [
     meta: { title: 'Agent管理', icon: 'Bot' },
   },
   {
+    path: '/llms',
+    name: 'LLMs',
+    component: () => import('@views/llm/LLMListPage.vue'),
+    meta: { title: 'LLM模型', icon: 'Cpu' },
+  },
+  {
     path: '/agents/:id',
     // :id 是动态路由参数（Path Variable）
     // 例如 /agents/123 → 组件内通过 route.params.id 获取 "123"
