@@ -26,6 +26,8 @@ export const useAgentStore = defineStore('agent', () => {
   const total = ref(0)
   /** 请求进行中的标识，组件据此显示 Loading */
   const loading = ref(false)
+  /** 最近一次请求的错误信息，成功时为 null */
+  const error = ref<string | null>(null)
   /** 当前选中的 Agent 详情 */
   const currentAgent = ref<Agent | null>(null)
   /** 列表查询参数，组件修改后调用 fetchAgents 生效 */
@@ -45,11 +47,14 @@ export const useAgentStore = defineStore('agent', () => {
    */
   async function fetchAgents(params?: Partial<AgentQueryParams>) {
     loading.value = true
+    error.value = null
     try {
       if (params) queryParams.value = { ...queryParams.value, ...params }
       const res = await agentApi.list(queryParams.value)
       agents.value = res.data
       total.value = res.total
+    } catch (e: any) {
+      error.value = e?.message || '获取Agent列表失败'
     } finally {
       loading.value = false
     }
@@ -58,8 +63,11 @@ export const useAgentStore = defineStore('agent', () => {
   /** 获取单个 Agent 详情，结果写入 currentAgent */
   async function fetchAgentDetail(id: number) {
     loading.value = true
+    error.value = null
     try {
       currentAgent.value = await agentApi.detail(id)
+    } catch (e: any) {
+      error.value = e?.message || '获取Agent详情失败'
     } finally {
       loading.value = false
     }
@@ -67,9 +75,15 @@ export const useAgentStore = defineStore('agent', () => {
 
   /** 创建 Agent，成功后自动刷新列表以保持分页数据一致 */
   async function createAgent(data: Partial<Agent>) {
-    const created = await agentApi.create(data)
-    await fetchAgents()
-    return created
+    error.value = null
+    try {
+      const created = await agentApi.create(data)
+      await fetchAgents()
+      return created
+    } catch (e: any) {
+      error.value = e?.message || '创建Agent失败'
+      throw e
+    }
   }
 
   /**
@@ -77,24 +91,42 @@ export const useAgentStore = defineStore('agent', () => {
    * 若当前详情页恰好是更新的 Agent，同步刷新 currentAgent 避免展示过期数据。
    */
   async function updateAgent(id: number, data: Partial<Agent>) {
-    const updated = await agentApi.update(id, data)
-    if (currentAgent.value?.id === id) currentAgent.value = updated
-    await fetchAgents()
-    return updated
+    error.value = null
+    try {
+      const updated = await agentApi.update(id, data)
+      if (currentAgent.value?.id === id) currentAgent.value = updated
+      await fetchAgents()
+      return updated
+    } catch (e: any) {
+      error.value = e?.message || '更新Agent失败'
+      throw e
+    }
   }
 
   /** 删除 Agent，若详情页正在查看该 Agent 则清空 currentAgent */
   async function deleteAgent(id: number) {
-    await agentApi.remove(id)
-    if (currentAgent.value?.id === id) currentAgent.value = null
-    await fetchAgents()
+    error.value = null
+    try {
+      await agentApi.remove(id)
+      if (currentAgent.value?.id === id) currentAgent.value = null
+      await fetchAgents()
+    } catch (e: any) {
+      error.value = e?.message || '删除Agent失败'
+      throw e
+    }
   }
 
   /** 测试 Agent API 连通性，不修改任何列表/详情状态 */
   async function testConnection(id: number) {
-    return agentApi.testConnection(id)
+    error.value = null
+    try {
+      return await agentApi.testConnection(id)
+    } catch (e: any) {
+      error.value = e?.message || '连接测试失败'
+      throw e
+    }
   }
 
-  return { agents, total, loading, currentAgent, queryParams, activeAgents,
+  return { agents, total, loading, error, currentAgent, queryParams, activeAgents,
     fetchAgents, fetchAgentDetail, createAgent, updateAgent, deleteAgent, testConnection }
 })

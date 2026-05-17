@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ArrowLeft, Play, Square } from 'lucide-vue-next'
+import { ArrowLeft, Play, Square, X } from 'lucide-vue-next'
 import { useEvaluationStore } from '@stores'
 import type { AgentResult } from '@types'
 import StatusBadge from '@components/common/StatusBadge.vue'
@@ -210,9 +210,13 @@ const sortedResults = computed(() =>
       </div>
     </div>
 
-    <!-- 加载中 -->
+    <!-- 加载/错误/空 -->
     <div v-else class="text-center py-20 text-gray-400">
-      <p v-if="evalStore.loading">加载中...</p>
+      <LoadingSpinner v-if="evalStore.loading" />
+      <div v-else-if="evalStore.error" class="space-y-3">
+        <p class="text-red-500">{{ evalStore.error }}</p>
+        <button class="btn-secondary text-sm" @click="evalStore.fetchTaskDetail(taskId)">重试</button>
+      </div>
       <p v-else>任务不存在</p>
     </div>
   </div>

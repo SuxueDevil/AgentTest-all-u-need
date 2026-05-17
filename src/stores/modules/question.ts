@@ -18,6 +18,8 @@ export const useQuestionStore = defineStore('question', () => {
   const total = ref(0)
   /** 请求进行中的标识，组件据此显示 Loading */
   const loading = ref(false)
+  /** 最近一次请求的错误信息，成功时为 null */
+  const error = ref<string | null>(null)
   /** 列表查询参数，组件修改后调用 fetchQuestions 生效 */
   const queryParams = ref<QuestionQueryParams>({ page: 1, pageSize: 20 })
 
@@ -31,11 +33,14 @@ export const useQuestionStore = defineStore('question', () => {
    */
   async function fetchQuestions(params?: Partial<QuestionQueryParams>) {
     loading.value = true
+    error.value = null
     try {
       if (params) queryParams.value = { ...queryParams.value, ...params }
       const res = await questionApi.list(queryParams.value)
       questions.value = res.data
       total.value = res.total
+    } catch (e: any) {
+      error.value = e?.message || '获取问题列表失败'
     } finally {
       loading.value = false
     }
@@ -46,8 +51,14 @@ export const useQuestionStore = defineStore('question', () => {
    * 【Java 类比】≈ QuestionServiceImpl.create(dto)，insert 后返回最新分页
    */
   async function createQuestion(data: Partial<Question>) {
-    await questionApi.create(data)
-    await fetchQuestions()
+    error.value = null
+    try {
+      await questionApi.create(data)
+      await fetchQuestions()
+    } catch (e: any) {
+      error.value = e?.message || '创建问题失败'
+      throw e
+    }
   }
 
   /**
@@ -55,8 +66,14 @@ export const useQuestionStore = defineStore('question', () => {
    * 【Java 类比】≈ QuestionServiceImpl.update(id, dto)
    */
   async function updateQuestion(id: number, data: Partial<Question>) {
-    await questionApi.update(id, data)
-    await fetchQuestions()
+    error.value = null
+    try {
+      await questionApi.update(id, data)
+      await fetchQuestions()
+    } catch (e: any) {
+      error.value = e?.message || '更新问题失败'
+      throw e
+    }
   }
 
   /**
@@ -64,8 +81,14 @@ export const useQuestionStore = defineStore('question', () => {
    * 【Java 类比】≈ QuestionServiceImpl.delete(id)
    */
   async function deleteQuestion(id: number) {
-    await questionApi.remove(id)
-    await fetchQuestions()
+    error.value = null
+    try {
+      await questionApi.remove(id)
+      await fetchQuestions()
+    } catch (e: any) {
+      error.value = e?.message || '删除问题失败'
+      throw e
+    }
   }
 
   /**
@@ -73,17 +96,29 @@ export const useQuestionStore = defineStore('question', () => {
    * 【Java 类比】≈ QuestionServiceImpl.batchDelete(ids)，返回删除条数
    */
   async function batchDeleteQuestions(ids: number[]) {
-    await questionApi.batchRemove(ids)
-    await fetchQuestions()
+    error.value = null
+    try {
+      await questionApi.batchRemove(ids)
+      await fetchQuestions()
+    } catch (e: any) {
+      error.value = e?.message || '批量删除失败'
+      throw e
+    }
   }
 
   async function generateQuestions(params: { category: string; difficulty: string; questionType: string; count: number }) {
-    await questionApi.generate(params)
-    await fetchQuestions()
+    error.value = null
+    try {
+      await questionApi.generate(params)
+      await fetchQuestions()
+    } catch (e: any) {
+      error.value = e?.message || 'AI生成题目失败'
+      throw e
+    }
   }
 
   return {
-    questions, total, loading, queryParams,
+    questions, total, loading, error, queryParams,
     fetchQuestions, createQuestion, updateQuestion, deleteQuestion, batchDeleteQuestions,
     generateQuestions,
   }

@@ -18,6 +18,8 @@ export const useEvaluationStore = defineStore('evaluation', () => {
   const total = ref(0)
   /** 加载中 */
   const loading = ref(false)
+  /** 最近一次请求的错误信息，成功时为 null */
+  const error = ref<string | null>(null)
   /** 当前查看的任务详情 */
   const currentTask = ref<EvaluationTask | null>(null)
   /** 当前任务的评测结果（按 Agent 分组） */
@@ -35,11 +37,14 @@ export const useEvaluationStore = defineStore('evaluation', () => {
    */
   async function fetchTasks(params?: Partial<EvaluationQueryParams>) {
     loading.value = true
+    error.value = null
     try {
       if (params) queryParams.value = { ...queryParams.value, ...params }
       const res = await evaluationApi.list(queryParams.value)
       tasks.value = res.data
       total.value = res.total
+    } catch (e: any) {
+      error.value = e?.message || '获取任务列表失败'
     } finally {
       loading.value = false
     }
@@ -51,8 +56,11 @@ export const useEvaluationStore = defineStore('evaluation', () => {
    */
   async function fetchTaskDetail(id: number) {
     loading.value = true
+    error.value = null
     try {
       currentTask.value = await evaluationApi.detail(id)
+    } catch (e: any) {
+      error.value = e?.message || '获取任务详情失败'
     } finally {
       loading.value = false
     }
@@ -63,9 +71,15 @@ export const useEvaluationStore = defineStore('evaluation', () => {
    * 【Java 类比】≈ EvaluationServiceImpl.create(dto)
    */
   async function createTask(data: Parameters<typeof evaluationApi.create>[0]) {
-    const created = await evaluationApi.create(data)
-    await fetchTasks()
-    return created
+    error.value = null
+    try {
+      const created = await evaluationApi.create(data)
+      await fetchTasks()
+      return created
+    } catch (e: any) {
+      error.value = e?.message || '创建任务失败'
+      throw e
+    }
   }
 
   /**
@@ -74,10 +88,16 @@ export const useEvaluationStore = defineStore('evaluation', () => {
    *   若当前详情页正好是更新的任务，同步刷新 currentTask 避免展示过期数据。
    */
   async function updateTask(id: number, data: Partial<EvaluationTask>) {
-    const updated = await evaluationApi.update(id, data)
-    if (currentTask.value?.id === id) currentTask.value = updated
-    await fetchTasks()
-    return updated
+    error.value = null
+    try {
+      const updated = await evaluationApi.update(id, data)
+      if (currentTask.value?.id === id) currentTask.value = updated
+      await fetchTasks()
+      return updated
+    } catch (e: any) {
+      error.value = e?.message || '更新任务失败'
+      throw e
+    }
   }
 
   /**
@@ -85,9 +105,15 @@ export const useEvaluationStore = defineStore('evaluation', () => {
    * 【Java 类比】≈ EvaluationServiceImpl.delete(id)
    */
   async function deleteTask(id: number) {
-    await evaluationApi.remove(id)
-    if (currentTask.value?.id === id) currentTask.value = null
-    await fetchTasks()
+    error.value = null
+    try {
+      await evaluationApi.remove(id)
+      if (currentTask.value?.id === id) currentTask.value = null
+      await fetchTasks()
+    } catch (e: any) {
+      error.value = e?.message || '删除任务失败'
+      throw e
+    }
   }
 
   /**
@@ -95,8 +121,14 @@ export const useEvaluationStore = defineStore('evaluation', () => {
    * 【Java 类比】≈ EvaluationServiceImpl.start(id)，触发异步执行
    */
   async function startTask(id: number) {
-    await evaluationApi.start(id)
-    await fetchTasks()
+    error.value = null
+    try {
+      await evaluationApi.start(id)
+      await fetchTasks()
+    } catch (e: any) {
+      error.value = e?.message || '启动评测失败'
+      throw e
+    }
   }
 
   /**
@@ -104,13 +136,25 @@ export const useEvaluationStore = defineStore('evaluation', () => {
    * 【Java 类比】≈ EvaluationServiceImpl.cancel(id)，中断正在执行的任务
    */
   async function restartTask(id: number) {
-    await evaluationApi.restart(id)
-    await fetchTasks()
+    error.value = null
+    try {
+      await evaluationApi.restart(id)
+      await fetchTasks()
+    } catch (e: any) {
+      error.value = e?.message || '重启评测失败'
+      throw e
+    }
   }
 
   async function cancelTask(id: number) {
-    await evaluationApi.cancel(id)
-    await fetchTasks()
+    error.value = null
+    try {
+      await evaluationApi.cancel(id)
+      await fetchTasks()
+    } catch (e: any) {
+      error.value = e?.message || '取消评测失败'
+      throw e
+    }
   }
 
   /**
@@ -118,8 +162,13 @@ export const useEvaluationStore = defineStore('evaluation', () => {
    * 【Java 类比】≈ EvaluationServiceImpl.getProgress(id)，返回 TaskProgress
    */
   async function fetchProgress(id: number) {
-    progress.value = await evaluationApi.progress(id)
-    return progress.value
+    try {
+      progress.value = await evaluationApi.progress(id)
+      return progress.value
+    } catch (e: any) {
+      error.value = e?.message || '获取进度失败'
+      return null
+    }
   }
 
   /**
@@ -127,12 +176,18 @@ export const useEvaluationStore = defineStore('evaluation', () => {
    * 【Java 类比】≈ EvaluationServiceImpl.getResults(id)，返回 List<AgentResult>
    */
   async function fetchResults(id: number) {
-    results.value = await evaluationApi.results(id)
-    return results.value
+    error.value = null
+    try {
+      results.value = await evaluationApi.results(id)
+      return results.value
+    } catch (e: any) {
+      error.value = e?.message || '获取结果失败'
+      return []
+    }
   }
 
   return {
-    tasks, total, loading, currentTask, results, progress, queryParams,
+    tasks, total, loading, error, currentTask, results, progress, queryParams,
     fetchTasks, fetchTaskDetail, createTask, updateTask, deleteTask,
     startTask, restartTask, cancelTask, fetchProgress, fetchResults,
   }
