@@ -17,17 +17,6 @@ export default {
           card: '#1A1A2E',
           border: '#2D2D4A',
         },
-        // 黄昏主题色系 — 暖橙金黄
-        'dusk': {
-          primary: '#F59E0B',
-          'primary-light': '#FDE68A',
-          'primary-dark': '#D97706',
-          bg: '#1C1408',
-          surface: '#221608',
-          card: '#2A1C0A',
-          border: '#3D2A12',
-          accent: '#F97316',
-        },
         // 评测状态色
         'eval': {
           pass: '#22C55E',

@@ -8,6 +8,7 @@ import { NAV_ITEMS } from '@constants'
 import {
   LayoutDashboard,
   Bot,
+  BookOpen,
   ClipboardCheck,
   Database,
   FileText,
@@ -22,6 +23,7 @@ const router = useRouter()
 const iconMap: Record<string, Component> = {
   LayoutDashboard,
   Bot,
+  BookOpen,
   ClipboardCheck,
   Database,
   FileText,
