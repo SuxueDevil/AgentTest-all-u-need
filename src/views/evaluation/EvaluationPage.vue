@@ -3,7 +3,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Plus, Search, Trash2, Play, Square, RotateCcw, X } from 'lucide-vue-next'
-import { useEvaluationStore, useQuestionStore, useAgentStore } from '@stores'
+import { useEvaluationStore, useQuestionStore, useAgentStore, useLLMStore } from '@stores'
 import type { EvaluationTask, TaskStatus, DimensionConfig } from '@types'
 import StatusBadge from '@components/common/StatusBadge.vue'
 import ConfirmDialog from '@components/common/ConfirmDialog.vue'
@@ -12,6 +12,7 @@ const router = useRouter()
 const evalStore = useEvaluationStore()
 const questionStore = useQuestionStore()
 const agentStore = useAgentStore()
+const llmStore = useLLMStore()
 
 // ==================== 弹窗 ====================
 
@@ -30,7 +31,7 @@ const canProceed = computed(() => {
   if (submitting.value) return false
   if (!form.value.name) return false
   if (form.value.questionIds.length === 0) return false
-  if (form.value.agentIds.length === 0) return false
+  if (form.value.agentIds.length === 0 && form.value.llmIds.length === 0) return false
   return true
 })
 
@@ -38,6 +39,7 @@ const form = ref({
   name: '', description: '',
   questionIds: [] as number[],
   agentIds: [] as number[],
+  llmIds: [] as number[],
   dimensions: [
     { name: 'accuracy', displayName: '准确性', weight: 0.30, threshold: 0.6 },
     { name: 'efficiency', displayName: '效率', weight: 0.20, threshold: 0.5 },
@@ -83,6 +85,7 @@ onMounted(() => {
   evalStore.fetchTasks()
   questionStore.fetchQuestions({ pageSize: 200 })
   agentStore.fetchAgents({ pageSize: 100 })
+  llmStore.fetchLLMs({ pageSize: 100 })
 })
 
 onUnmounted(() => stopAutoRefresh())
@@ -94,6 +97,7 @@ function openCreate() {
     name: '', description: '',
     questionIds: [],
     agentIds: [],
+    llmIds: [],
     dimensions: [
       { name: 'accuracy', displayName: '准确性', weight: 0.30, threshold: 0.6 },
       { name: 'efficiency', displayName: '效率', weight: 0.20, threshold: 0.5 },
@@ -116,6 +120,12 @@ function toggleAgent(id: number) {
   else { form.value.agentIds.splice(idx, 1) }
 }
 
+function toggleLLM(id: number) {
+  const idx = form.value.llmIds.indexOf(id)
+  if (idx === -1) { form.value.llmIds.push(id) }
+  else { form.value.llmIds.splice(idx, 1) }
+}
+
 function addDimension() {
   form.value.dimensions.push({ name: '', displayName: '', weight: 0, threshold: 0.5 })
 }
@@ -132,6 +142,7 @@ async function handleSubmit() {
       description: form.value.description,
       questionIds: form.value.questionIds,
       agentIds: form.value.agentIds,
+      llmIds: form.value.llmIds,
       dimensions: form.value.dimensions.filter(d => d.name && d.displayName),
     })
     showCreateDialog.value = false
@@ -315,8 +326,8 @@ const totalWeight = computed(() =>
           </div>
         </div>
 
-        <!-- 选题 + 选Agent 并排 -->
-        <div class="grid grid-cols-2 gap-4">
+        <!-- 选题 + 选Agent + 选LLM 并排 -->
+        <div class="grid grid-cols-3 gap-3">
           <div class="space-y-1">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">选择题目 <span class="text-xs text-gray-400">({{ form.questionIds.length }})</span></label>
             <div class="max-h-48 overflow-y-auto space-y-0.5 border rounded-lg p-1.5">
@@ -340,6 +351,19 @@ const totalWeight = computed(() =>
                 <input type="checkbox" :checked="form.agentIds.includes(a.id)" class="rounded scale-90" />
                 <span class="flex-1">{{ a.name }}</span>
                 <span class="text-xs text-gray-400">{{ a.model }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">选择 LLM <span class="text-xs text-gray-400">({{ form.llmIds.length }})</span></label>
+            <div class="max-h-48 overflow-y-auto space-y-0.5 border rounded-lg p-1.5">
+              <div v-for="l in llmStore.llms" :key="l.id"
+                class="flex items-center gap-1.5 text-xs py-1 px-1.5 rounded hover:bg-gray-50 dark:hover:bg-ai-surface cursor-pointer"
+                @click="toggleLLM(l.id)"
+              >
+                <input type="checkbox" :checked="form.llmIds.includes(l.id)" class="rounded scale-90" />
+                <span class="flex-1">{{ l.name }}</span>
+                <span class="text-xs text-gray-400">{{ l.model }}</span>
               </div>
             </div>
           </div>

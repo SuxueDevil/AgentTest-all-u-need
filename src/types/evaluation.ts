@@ -24,6 +24,8 @@ export interface EvaluationTask {
   questionIds: number[]
   /** 参评 Agent ID 列表 */
   agentIds: number[]
+  /** 参评 LLM ID 列表 */
+  llmIds?: number[]
   /** 维度配置 */
   dimensions: DimensionConfig[]
   /** 题目总数 */

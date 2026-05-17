@@ -557,6 +557,7 @@ const deleteMessage = computed(() => {
       :show="showDeleteDialog"
       title="确认删除"
       variant="danger"
+      :loading="submitting"
       :message="deleteMessage"
       @confirm="handleDelete"
       @cancel="showDeleteDialog = false"

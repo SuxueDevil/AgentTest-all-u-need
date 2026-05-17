@@ -340,8 +340,8 @@ function onPageChange(page: number) {
           <!-- 模型 + 类型 -->
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">模型</label>
-              <input v-model="form.model" class="input-field" placeholder="如 gpt-4o" />
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">模型 <span class="text-xs text-gray-400">（可选，仅标注）</span></label>
+              <input v-model="form.model" class="input-field" placeholder="如 gpt-4o，不影响请求" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">类型 *</label>
@@ -423,6 +423,7 @@ function onPageChange(page: number) {
       :show="showDeleteDialog"
       title="确认删除"
       variant="danger"
+      :loading="submitting"
       :message="`确定要删除 Agent「${deleteTarget?.name}」吗？此操作不可撤销。`"
       @confirm="handleDelete"
       @cancel="showDeleteDialog = false"
