@@ -1,20 +1,12 @@
 <!--
   顶部导航栏 — Logo + 主题切换按钮。
   粘性定位，滚动时始终可见。通过 useAppStore 读写当前主题状态。
-
-  【Java 类比】≈ Spring MVC 布局中的 header.jsp / header fragment
-    useAppStore() ≈ @Autowired AppConfigService，读取全局主题配置
 -->
 <script setup lang="ts">
-import { Sun, Moon } from 'lucide-vue-next'
+import { Sun, Moon, Sunset } from 'lucide-vue-next'
 import { useAppStore } from '@stores'
 
 const appStore = useAppStore()
-
-/** 切换暗黑/明亮主题，更新 Store 并持久化到 localStorage */
-function toggleTheme() {
-  appStore.setTheme(appStore.theme === 'dark' ? 'light' : 'dark')
-}
 </script>
 
 <template>
@@ -40,11 +32,12 @@ function toggleTheme() {
     <button
       class="rounded-xl p-2 transition-all duration-200 hover:bg-white/10"
       :class="appStore.theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-gray-200'"
-      @click="toggleTheme"
-      :title="appStore.theme === 'dark' ? '切换日间模式' : '切换夜间模式'"
+      @click="appStore.cycleTheme()"
+      :title="appStore.theme === 'dark' ? '切换黄昏模式' : appStore.theme === 'dusk' ? '切换亮色模式' : '切换暗色模式'"
     >
-      <Sun v-if="appStore.theme === 'dark'" :size="18" />
-      <Moon v-else :size="18" />
+      <Sun v-if="appStore.theme === 'light'" :size="22" class="text-amber-400" />
+      <Moon v-else-if="appStore.theme === 'dark'" :size="22" class="text-indigo-400" />
+      <Sunset v-else :size="22" class="text-orange-400" />
     </button>
   </header>
 </template>

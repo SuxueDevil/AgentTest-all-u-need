@@ -1,10 +1,6 @@
 <!--
   底部导航栏 — 移动端专用，从 NAV_ITEMS 常量渲染图标式导航。
   固定在页面底部，毛玻璃背景效果。
-
-  【Java 类比】≈ 移动端 TabBar / Spring MVC 的 footer nav fragment
-    router.push() ≈ 页面跳转
-    与 SidebarNav 共享 NAV_ITEMS 数据源，保证导航项一致性
 -->
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'

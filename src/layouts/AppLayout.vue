@@ -1,10 +1,6 @@
 <!--
   应用布局壳 — 顶部 Header + 中间 <slot /> + 底部导航。
   所有页面通过 <router-view> 渲染在 <slot /> 位置。
-
-  【Java 类比】≈ Spring MVC 的 Tiles / Thymeleaf Layout Dialect
-    相当于 decorator 模板: header + content + footer 的组合布局
-    <slot /> ≈ Thymeleaf 的 th:replace 插入点
 -->
 <script setup lang="ts">
 import BottomNav from './BottomNav.vue'
