@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Plus, Search, Trash2, Play, Square, RotateCcw, X } from 'lucide-vue-next'
+import { Plus, Search, Trash2, Play, Square, RotateCcw, X, Loader2 } from 'lucide-vue-next'
 import { useEvaluationStore, useQuestionStore, useAgentStore, useLLMStore } from '@stores'
 import type { EvaluationTask, TaskStatus, DimensionConfig } from '@types'
 import StatusBadge from '@components/common/StatusBadge.vue'
@@ -20,6 +20,8 @@ const showCreateDialog = ref(false)
 const showDeleteDialog = ref(false)
 const deleteTarget = ref<EvaluationTask | null>(null)
 const deleting = ref(false)
+/** 当前正在执行操作的任务ID（启动/重启/取消），用于按钮 loading 动画 */
+const actingId = ref<number | null>(null)
 
 // ==================== 筛选 ====================
 
@@ -72,7 +74,7 @@ let refreshTimer: ReturnType<typeof setInterval> | null = null
 function startAutoRefresh() {
   if (refreshTimer) return
   refreshTimer = setInterval(async () => {
-    await evalStore.fetchTasks()
+    await evalStore.fetchTasks({}, true)
     if (!evalStore.tasks.some(t => t.status === 'running')) stopAutoRefresh()
   }, 3000)
 }
@@ -88,7 +90,9 @@ onMounted(() => {
   llmStore.fetchLLMs({ pageSize: 100 })
 })
 
-onUnmounted(() => stopAutoRefresh())
+onUnmounted(() => {
+  stopAutoRefresh()
+})
 
 // ==================== 创建任务 ====================
 
@@ -169,16 +173,28 @@ async function handleDelete() {
 }
 
 async function handleStart(task: EvaluationTask) {
-  await evalStore.startTask(task.id)
+  actingId.value = task.id
+  // 乐观更新：立刻把状态改成 running，不等后端返回
+  task.status = 'running'
+  task.completedCount = 0
   startAutoRefresh()
+  try {
+    await evalStore.startTask(task.id)
+  } finally { actingId.value = null }
 }
 
 async function handleRestart(task: EvaluationTask) {
-  await evalStore.restartTask(task.id)
+  actingId.value = task.id
+  try {
+    await evalStore.restartTask(task.id)
+  } finally { actingId.value = null }
 }
 
 async function handleCancel(task: EvaluationTask) {
-  await evalStore.cancelTask(task.id)
+  actingId.value = task.id
+  try {
+    await evalStore.cancelTask(task.id)
+  } finally { actingId.value = null }
 }
 
 // ==================== 分页 / 搜索 ====================
@@ -189,6 +205,12 @@ function onSearch() {
 
 function onPageChange(page: number) {
   evalStore.fetchTasks({ page })
+}
+
+/** 进度百分比（实时值） */
+function realProgress(task: EvaluationTask) {
+  if (task.questionCount === 0) return 0
+  return Math.round((task.completedCount / task.questionCount) * 100)
 }
 
 /** 进度百分比 */
@@ -242,19 +264,31 @@ const totalWeight = computed(() =>
       </template>
       <template #cell-info="{ row }: { row: EvaluationTask }">
         <span class="text-xs text-gray-400">
-          {{ row.questionCount }} 题 / {{ row.agentIds.length }} Agent
+          {{ row.questionIds.length }}题 / {{ row.agentIds.length + (row.llmIds?.length ?? 0) }}目标
         </span>
       </template>
       <template #cell-progress="{ row }: { row: EvaluationTask }">
         <div class="flex items-center gap-2">
-          <div class="h-1.5 flex-1 rounded-full bg-gray-200 dark:bg-ai-surface overflow-hidden">
+          <div class="h-2 flex-1 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
             <div
-              class="h-full rounded-full transition-all"
-              :class="row.status === 'completed' ? 'bg-green-500' : row.status === 'failed' ? 'bg-red-500' : 'bg-ai-purple'"
+              class="h-full rounded-full transition-all duration-700"
+              :class="{
+                'bg-green-500': row.status === 'completed',
+                'bg-red-500': row.status === 'failed',
+                'bg-ai-purple animate-progress': row.status === 'running',
+                'bg-gray-400': row.status === 'pending' || row.status === 'cancelled',
+              }"
               :style="{ width: `${progressPercent(row)}%` }"
             />
           </div>
-          <span class="text-xs text-gray-400 w-10">{{ row.completedCount }}/{{ row.questionCount }}</span>
+          <span class="text-xs font-mono w-12 text-right"
+            :class="{
+              'text-green-500': row.status === 'completed',
+              'text-red-400': row.status === 'failed',
+              'text-ai-purple-light': row.status === 'running',
+              'text-gray-400': row.status === 'pending' || row.status === 'cancelled',
+            }"
+          >{{ progressPercent(row) }}%</span>
         </div>
       </template>
       <template #cell-status="{ value }">
@@ -264,27 +298,31 @@ const totalWeight = computed(() =>
         <span class="text-xs text-gray-400">{{ value }}</span>
       </template>
       <template #cell-actions="{ row }: { row: EvaluationTask }">
-        <div class="flex items-center gap-1" @click.stop>
+        <div class="flex items-center gap-1.5" @click.stop>
           <button
             v-if="row.status === 'pending'"
-            class="p-1 text-green-500 hover:text-green-600 rounded" title="启动"
+            class="p-1.5 text-green-500 hover:text-green-600 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors disabled:opacity-50" title="启动"
+            :disabled="actingId !== null"
             @click="handleStart(row)"
-          ><Play :size="14" /></button>
+          ><Loader2 v-if="actingId === row.id" :size="16" class="animate-spin" /><Play v-else :size="16" /></button>
           <button
             v-if="row.status === 'running'"
-            class="p-1 text-yellow-500 hover:text-yellow-600 rounded" title="取消"
+            class="p-1.5 text-yellow-500 hover:text-yellow-600 rounded-lg hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors disabled:opacity-50" title="取消"
+            :disabled="actingId !== null"
             @click="handleCancel(row)"
-          ><Square :size="14" /></button>
+          ><Loader2 v-if="actingId === row.id" :size="16" class="animate-spin" /><Square v-else :size="16" /></button>
           <button
             v-if="row.status === 'completed' || row.status === 'cancelled' || row.status === 'failed'"
-            class="p-1 text-gray-400 hover:text-green-500 rounded" title="重新开始"
+            class="p-1.5 text-gray-400 hover:text-green-500 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors disabled:opacity-50" title="重新开始"
+            :disabled="actingId !== null"
             @click="handleRestart(row)"
-          ><RotateCcw :size="14" /></button>
+          ><Loader2 v-if="actingId === row.id" :size="16" class="animate-spin" /><RotateCcw v-else :size="16" /></button>
           <button
             v-if="row.status !== 'running'"
-            class="p-1 text-gray-400 hover:text-red-500 rounded" title="删除"
+            class="p-1.5 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50" title="删除"
+            :disabled="actingId !== null"
             @click="confirmDelete(row)"
-          ><Trash2 :size="14" /></button>
+          ><Trash2 :size="16" /></button>
         </div>
       </template>
     </DataTable>
@@ -411,3 +449,16 @@ const totalWeight = computed(() =>
     />
   </div>
 </template>
+
+<style scoped>
+@keyframes progress-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.animate-progress {
+  background: linear-gradient(90deg, #7C3AED 0%, #A78BFA 40%, #7C3AED 70%) !important;
+  background-size: 200% 100% !important;
+  animation: progress-shimmer 2s linear infinite;
+}
+</style>

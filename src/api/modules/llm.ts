@@ -8,7 +8,7 @@ import type { PageResult } from '@types'
 
 /** GET /api/llms — 分页查询 */
 export function list(params: LLMQueryParams) {
-  return get<PageResult<LLM>>('/llms', params)
+  return get<PageResult<LLM>>('/llms', { params })
 }
 
 /** GET /api/llms/:id — 查询详情 */

@@ -35,8 +35,8 @@ export const useEvaluationStore = defineStore('evaluation', () => {
    * 获取任务列表。
    * 【Java 类比】≈ EvaluationServiceImpl.page(queryDTO)
    */
-  async function fetchTasks(params?: Partial<EvaluationQueryParams>) {
-    loading.value = true
+  async function fetchTasks(params?: Partial<EvaluationQueryParams>, silent = false) {
+    if (!silent) loading.value = true
     error.value = null
     try {
       if (params) queryParams.value = { ...queryParams.value, ...params }
@@ -46,7 +46,7 @@ export const useEvaluationStore = defineStore('evaluation', () => {
     } catch (e: any) {
       error.value = e?.message || '获取任务列表失败'
     } finally {
-      loading.value = false
+      if (!silent) loading.value = false
     }
   }
 

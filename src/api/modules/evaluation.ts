@@ -22,6 +22,7 @@ export const evaluationApi = {
     description: string
     questionIds: number[]
     agentIds: number[]
+    llmIds?: number[]
     dimensions: { name: string; displayName: string; weight: number; threshold: number }[]
   }) {
     return post<EvaluationTask>('/evaluation', data)
