@@ -52,7 +52,7 @@ const gridTemplate = computed(() =>
         :class="{ 'cursor-pointer select-none': col.sortable }"
         @click="col.sortable && emit('sort', col.key)"
       >
-        {{ col.label }}
+        <slot :name="`head-${col.key}`">{{ col.label }}</slot>
       </div>
     </div>
 

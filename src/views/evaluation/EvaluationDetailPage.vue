@@ -18,6 +18,11 @@ const taskId = Number(route.params.id)
 
 onMounted(async () => {
   await evalStore.fetchTaskDetail(taskId)
+  const task = evalStore.currentTask
+  // 已完成/已取消的任务自动加载结果，无需手动点"查看结果"
+  if (task && (task.status === 'completed' || task.status === 'cancelled')) {
+    evalStore.fetchResults(taskId)
+  }
   startPollingIfRunning()
 })
 
@@ -158,7 +163,6 @@ const sortedResults = computed(() =>
             :style="{ width: `${smoothProgress}%` }" />
         </div>
         <p class="text-xs text-right text-gray-400">{{ smoothProgress.toFixed(0) }}%</p>
-      </div>
       </div>
 
       <!-- 维度配置 -->

@@ -79,7 +79,7 @@ function toggleAll() {
 // ==================== 表格列定义 ====================
 
 const columns = [
-  { key: 'checkbox', label: '', width: '40px' },
+  { key: 'checkbox', label: '', width: '56px' },
   { key: 'title', label: '问题标题', width: '3fr' },
   { key: 'category', label: '分类', width: '1fr' },
   { key: 'difficulty', label: '难度', width: '0.8fr' },
@@ -336,12 +336,15 @@ const deleteMessage = computed(() => {
       </template>
       <!-- 表头复选框 -->
       <template #head-checkbox>
-        <input
-          type="checkbox"
-          :checked="selectedIds.size === questionStore.questions.length && questionStore.questions.length > 0"
-          class="rounded border-gray-300 text-ai-purple focus:ring-ai-purple/30"
-          @change="toggleAll"
-        />
+        <label class="flex items-center gap-1.5 cursor-pointer text-xs text-gray-500 select-none">
+          <input
+            type="checkbox"
+            :checked="selectedIds.size === questionStore.questions.length && questionStore.questions.length > 0"
+            class="rounded border-gray-300 text-ai-purple focus:ring-ai-purple/30"
+            @change="toggleAll"
+          />
+          全选
+        </label>
       </template>
       <!-- 标题列 -->
       <template #cell-title="{ row }: { row: Question }">
