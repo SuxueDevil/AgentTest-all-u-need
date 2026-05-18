@@ -86,6 +86,12 @@ const routes: RouteRecordRaw[] = [
     meta: { title: '评测报告', icon: 'FileText' },
   },
   {
+    path: '/relax',
+    name: 'Relax',
+    component: () => import('@views/relax/RelaxPage.vue'),
+    meta: { title: '休息一下', icon: 'Coffee' },
+  },
+  {
     /**
      * 404 兜底路由 — 匹配所有未被上面路由处理的路径
      * ---------------------------------------------------------------------------
