@@ -38,14 +38,14 @@ export const evaluationApi = {
     return del<void>(`/evaluation/${id}`)
   },
 
-  /** POST /api/evaluation/:id/start — 启动评测 */
+  /** POST /api/evaluation/:id/start — 启动评测（长超时：多轮对话耗时较长） */
   start(id: number) {
-    return post<void>(`/evaluation/${id}/start`)
+    return post<void>(`/evaluation/${id}/start`, undefined, { timeout: 600000 })
   },
 
-  /** POST /api/evaluation/:id/restart — 重新开始 */
+  /** POST /api/evaluation/:id/restart — 重新开始（长超时：多轮对话耗时较长） */
   restart(id: number) {
-    return post<void>(`/evaluation/${id}/restart`)
+    return post<void>(`/evaluation/${id}/restart`, undefined, { timeout: 600000 })
   },
 
   /** POST /api/evaluation/:id/cancel — 取消评测 */

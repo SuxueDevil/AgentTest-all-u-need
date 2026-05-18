@@ -1,6 +1,6 @@
 <!-- 评测任务详情页 — 进度轮询 / 结果列表 / 维度得分 -->
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Play, Square, X } from 'lucide-vue-next'
 import { useEvaluationStore } from '@stores'
@@ -72,6 +72,42 @@ const progressPercent = computed(() => {
   return Math.round((t.completedCount / t.questionCount) * 100)
 })
 
+// ==================== 进度动画 ====================
+
+/** 动画显示的平滑进度值 */
+const smoothProgress = ref(0)
+let animFrameId = 0
+let lastTarget = 0
+
+/** easeOutCubic 曲线平滑过渡 */
+function animateProgress(from: number, to: number) {
+  if (animFrameId) cancelAnimationFrame(animFrameId)
+  const duration = 900
+  const startTime = performance.now()
+
+  function step(now: number) {
+    const t = Math.min((now - startTime) / duration, 1)
+    smoothProgress.value = from + (to - from) * (1 - Math.pow(1 - t, 3))
+    if (t < 1) {
+      animFrameId = requestAnimationFrame(step)
+    } else {
+      smoothProgress.value = to
+      animFrameId = 0
+    }
+  }
+  animFrameId = requestAnimationFrame(step)
+}
+
+watch(progressPercent, (pct) => {
+  if (smoothProgress.value === 0) {
+    smoothProgress.value = pct
+    lastTarget = pct
+    return
+  }
+  lastTarget = pct
+  animateProgress(smoothProgress.value, pct)
+})
+
 /** 结果按 overallScore 降序排列 */
 const sortedResults = computed(() =>
   [...evalStore.results].sort((a, b) => b.overallScore - a.overallScore)
@@ -118,9 +154,11 @@ const sortedResults = computed(() =>
           <span class="font-mono">{{ evalStore.currentTask.completedCount }} / {{ evalStore.currentTask.questionCount }}</span>
         </div>
         <div class="h-2 rounded-full bg-gray-200 dark:bg-ai-surface overflow-hidden">
-          <div class="h-full rounded-full bg-ai-purple transition-all duration-500"
-            :style="{ width: `${progressPercent}%` }" />
+          <div class="h-full rounded-full bg-ai-purple"
+            :style="{ width: `${smoothProgress}%` }" />
         </div>
+        <p class="text-xs text-right text-gray-400">{{ smoothProgress.toFixed(0) }}%</p>
+      </div>
       </div>
 
       <!-- 维度配置 -->

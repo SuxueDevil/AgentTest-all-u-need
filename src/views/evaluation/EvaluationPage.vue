@@ -1,6 +1,6 @@
 <!-- 评测任务列表页 — 搜索 / 状态筛选 / 分页 / 新建任务 / 启动 / 取消 / 删除 -->
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Plus, Search, Trash2, Play, Square, RotateCcw, X, Loader2 } from 'lucide-vue-next'
 import { useEvaluationStore, useQuestionStore, useAgentStore, useLLMStore } from '@stores'
@@ -211,17 +211,60 @@ function onPageChange(page: number) {
   evalStore.fetchTasks({ page })
 }
 
-/** 进度百分比（实时值） */
-function realProgress(task: EvaluationTask) {
-  if (task.questionCount === 0) return 0
-  return Math.round((task.completedCount / task.questionCount) * 100)
-}
-
 /** 进度百分比 */
 function progressPercent(task: EvaluationTask) {
   if (task.questionCount === 0) return 0
   return Math.round((task.completedCount / task.questionCount) * 100)
 }
+
+// ==================== 进度动画 ====================
+
+/** 动画中显示的进度值，key=taskId，value=0-100 */
+const smoothProgress = reactive<Record<number, number>>({})
+/** requestAnimationFrame ID，用于取消旧动画 */
+const animFrameIds: Record<number, number> = {}
+
+/**
+ * 用 easeOutCubic 曲线把进度数字从 from 平滑过渡到 to。
+ * 【Java 类比】≈ 插值器 Interpolator，前端用 RAF 逐帧推进
+ */
+function animateProgress(taskId: number, from: number, to: number) {
+  if (animFrameIds[taskId]) cancelAnimationFrame(animFrameIds[taskId])
+  const duration = 900
+  const startTime = performance.now()
+
+  function step(now: number) {
+    const t = Math.min((now - startTime) / duration, 1)
+    smoothProgress[taskId] = from + (to - from) * (1 - Math.pow(1 - t, 3))
+    if (t < 1) {
+      animFrameIds[taskId] = requestAnimationFrame(step)
+    } else {
+      smoothProgress[taskId] = to
+      delete animFrameIds[taskId]
+    }
+  }
+  animFrameIds[taskId] = requestAnimationFrame(step)
+}
+
+/** 获取任务的平滑进度值（动画中）或实时值（未初始化时） */
+function smoothPct(task: EvaluationTask) {
+  return smoothProgress[task.id] ?? progressPercent(task)
+}
+
+// 监听所有任务的 progressPercent 变化，触发数字平滑动画
+watch(
+  () => evalStore.tasks.map(t => ({ id: t.id, pct: progressPercent(t) })),
+  (vals) => {
+    for (const { id, pct } of vals) {
+      const prev = smoothProgress[id]
+      if (prev === undefined) {
+        smoothProgress[id] = pct
+      } else if (Math.abs(pct - prev) > 0.5) {
+        animateProgress(id, prev, pct)
+      }
+    }
+  },
+)
 
 /** 维度权重合计 */
 const totalWeight = computed(() =>
@@ -275,14 +318,14 @@ const totalWeight = computed(() =>
         <div class="flex items-center gap-2">
           <div class="h-2 flex-1 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
             <div
-              class="h-full rounded-full transition-all duration-700"
+              class="h-full rounded-full"
               :class="{
                 'bg-green-500': row.status === 'completed',
                 'bg-red-500': row.status === 'failed',
                 'bg-ai-purple animate-progress': row.status === 'running',
                 'bg-gray-400': row.status === 'pending' || row.status === 'cancelled',
               }"
-              :style="{ width: `${progressPercent(row)}%` }"
+              :style="{ width: `${smoothPct(row)}%` }"
             />
           </div>
           <span class="text-xs font-mono w-12 text-right"
@@ -292,7 +335,7 @@ const totalWeight = computed(() =>
               'text-ai-purple-light': row.status === 'running',
               'text-gray-400': row.status === 'pending' || row.status === 'cancelled',
             }"
-          >{{ progressPercent(row) }}%</span>
+          >{{ smoothPct(row).toFixed(0) }}%</span>
         </div>
       </template>
       <template #cell-status="{ value }">
