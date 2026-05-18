@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Globe, Shield, Wifi } from 'lucide-vue-next'
 import { useAgentStore } from '@stores'
+import { formatDate } from '@utils/format'
 import StatusBadge from '@components/common/StatusBadge.vue'
 import LoadingSpinner from '@components/common/LoadingSpinner.vue'
 
@@ -137,7 +138,7 @@ async function handleTestConnection() {
         <div class="space-y-2 text-sm">
           <div class="flex justify-between">
             <span class="text-gray-400 dark:text-gray-500">创建时间</span>
-            <span class="text-gray-700 dark:text-gray-300">{{ agentStore.currentAgent.createdAt }}</span>
+            <span class="text-gray-700 dark:text-gray-300">{{ formatDate(agentStore.currentAgent.createdAt) }}</span>
           </div>
           <div class="flex justify-between">
             <span class="text-gray-400 dark:text-gray-500">更新时间</span>

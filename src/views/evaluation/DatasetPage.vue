@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { formatDate } from '@utils/format'
 const datasets = ref<any[]>([])
 
 const columns = [
@@ -46,7 +47,7 @@ onMounted(() => {
         <span class="badge-info">{{ diffLabels[value as string] || value }}</span>
       </template>
       <template #cell-createdAt="{ value }">
-        <span class="text-gray-400 dark:text-gray-500">{{ value }}</span>
+        <span class="text-sm text-gray-400 dark:text-gray-500">{{ formatDate(value) }}</span>
       </template>
     </DataTable>
   </div>

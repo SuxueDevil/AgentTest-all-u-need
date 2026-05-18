@@ -3,6 +3,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { Plus, Search, Pencil, Trash2, X } from 'lucide-vue-next'
 import { useLLMStore } from '@stores'
+import { formatDate } from '@utils/format'
 import type { LLM } from '@types'
 import ConfirmDialog from '@components/common/ConfirmDialog.vue'
 
@@ -113,10 +114,10 @@ function onPageChange(page: number) {
         <code class="text-xs bg-gray-100 dark:bg-ai-surface px-2 py-0.5 rounded text-ai-purple">{{ value }}</code>
       </template>
       <template #cell-endpointUrl="{ value }">
-        <span class="text-xs text-gray-400">{{ value }}</span>
+        <span class="text-gray-400">{{ value }}</span>
       </template>
       <template #cell-updatedAt="{ value }">
-        <span class="text-xs text-gray-400 dark:text-gray-500">{{ value }}</span>
+        <span class="text-gray-400 dark:text-gray-500">{{ formatDate(value) }}</span>
       </template>
       <template #cell-actions="{ row }: { row: LLM }">
         <div class="flex items-center gap-1">

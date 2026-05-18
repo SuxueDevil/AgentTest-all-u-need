@@ -3,6 +3,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { Plus, Search, Pencil, Trash2, Upload, Download, X, Sparkles } from 'lucide-vue-next'
 import { useQuestionStore } from '@stores'
+import { formatDate } from '@utils/format'
 import { questionApi } from '@api'
 import type { Question, QuestionCategory, DifficultyLevel, QuestionType, Turn } from '@types'
 import ConfirmDialog from '@components/common/ConfirmDialog.vue'
@@ -365,11 +366,11 @@ const deleteMessage = computed(() => {
       </template>
       <!-- 类型列 -->
       <template #cell-questionType="{ value }">
-        <span class="text-xs text-gray-400">{{ questionTypeLabels[value as QuestionType] || value }}</span>
+        <span class="text-gray-400">{{ questionTypeLabels[value as QuestionType] || value }}</span>
       </template>
       <!-- 更新时间列 -->
       <template #cell-updatedAt="{ value }">
-        <span class="text-xs text-gray-400 dark:text-gray-500">{{ value }}</span>
+        <span class="text-gray-400 dark:text-gray-500">{{ formatDate(value) }}</span>
       </template>
       <!-- 操作列 -->
       <template #cell-actions="{ row }: { row: Question }">

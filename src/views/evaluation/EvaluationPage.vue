@@ -4,6 +4,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Plus, Search, Trash2, Play, Square, RotateCcw, X, Loader2 } from 'lucide-vue-next'
 import { useEvaluationStore, useQuestionStore, useAgentStore, useLLMStore } from '@stores'
+import { formatDate } from '@utils/format'
 import type { EvaluationTask, TaskStatus, DimensionConfig } from '@types'
 import StatusBadge from '@components/common/StatusBadge.vue'
 import ConfirmDialog from '@components/common/ConfirmDialog.vue'
@@ -298,7 +299,7 @@ const totalWeight = computed(() =>
         <StatusBadge :status="value as string" type="task" />
       </template>
       <template #cell-createdAt="{ value }">
-        <span class="text-xs text-gray-400">{{ value }}</span>
+        <span class="text-gray-400">{{ formatDate(value) }}</span>
       </template>
       <template #cell-actions="{ row }: { row: EvaluationTask }">
         <div class="flex items-center gap-1.5" @click.stop>

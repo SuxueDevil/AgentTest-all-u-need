@@ -9,6 +9,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { Plus, Search, Pencil, Trash2, X } from 'lucide-vue-next'
 import { useAgentStore } from '@stores'
+import { formatDate } from '@utils/format'
 import type { Agent } from '@types'
 import StatusBadge from '@components/common/StatusBadge.vue'
 import ConfirmDialog from '@components/common/ConfirmDialog.vue'
@@ -278,7 +279,7 @@ function onPageChange(page: number) {
       </template>
       <!-- 类型列: 显示中文 -->
       <template #cell-type="{ value }">
-        <span class="text-gray-500 dark:text-gray-400 text-xs">{{ typeLabels[value as string] || value }}</span>
+        <span class="text-gray-500 dark:text-gray-400">{{ typeLabels[value as string] || value }}</span>
       </template>
       <!-- 状态列: 彩色标签 -->
       <template #cell-status="{ value }">
@@ -286,7 +287,7 @@ function onPageChange(page: number) {
       </template>
       <!-- 更新时间列 -->
       <template #cell-updatedAt="{ value }">
-        <span class="text-xs text-gray-400 dark:text-gray-500">{{ value }}</span>
+        <span class="text-gray-400 dark:text-gray-500">{{ formatDate(value) }}</span>
       </template>
       <!-- 操作列: 编辑 + 删除按钮，阻止事件冒泡避免触发行点击 -->
       <template #cell-actions="{ row }: { row: Agent }">
