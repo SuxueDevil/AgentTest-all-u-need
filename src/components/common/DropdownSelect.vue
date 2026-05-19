@@ -1,10 +1,6 @@
 <!--
   下拉选择器 — 替代原生 <select>，支持过渡动画和选项样式。
 
-  【Java 类比】≈ 自定义 JComboBox + popup 动画
-    原生 select 弹出是 OS 级渲染，无法加样式/动画；
-    此处用 div 模拟下拉面板，Teleport 到 body 避免 overflow 裁剪。
-
   交互：
     - 点击触发器 → 切换开/关
     - 鼠标悬停触发器 → 自动展开
