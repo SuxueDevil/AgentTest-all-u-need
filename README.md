@@ -1,4 +1,4 @@
-# AgentTest-All-u-Need · 前端
+<img width="846" height="798" alt="image" src="https://github.com/user-attachments/assets/06cd888a-c8f0-4bbb-934a-b3621ee52eeb" /># AgentTest-All-u-Need · 前端
 
 ## 1. 项目介绍
 
@@ -10,7 +10,38 @@
 
 ## 2. 项目截图
 
-> TODO
+### 亮色
+
+- 仪表盘
+<img width="1910" height="873" alt="image" src="https://github.com/user-attachments/assets/22b740cc-6e6d-46a8-b759-7e9f7e9b753b" />
+
+- 休息页
+<img width="1910" height="873" alt="image" src="https://github.com/user-attachments/assets/9b8ceff6-5bbe-4acd-86ca-c3d3fac412d6" />
+
+- Agent管理
+<img width="1919" height="881" alt="image" src="https://github.com/user-attachments/assets/b0fb055c-f4a7-4e34-813c-7770ed507cab" />
+
+- 新建Agent
+<img width="846" height="798" alt="image" src="https://github.com/user-attachments/assets/cb434fc2-43f2-4ad4-aaf4-327f9bb8178c" />
+<img width="854" height="795" alt="image" src="https://github.com/user-attachments/assets/c3715af3-6eff-40b1-892f-fc2b6b079b1a" />
+
+-AI生成题库
+<img width="582" height="671" alt="image" src="https://github.com/user-attachments/assets/e85cedc9-ae81-4c4c-ba08-50a6d6940e1d" />
+
+- 测出报告
+<img width="1919" height="880" alt="image" src="https://github.com/user-attachments/assets/f30168f9-c375-4d1d-997c-5340edeebe07" />
+
+
+### 暗色
+
+- 仪表盘
+<img width="1919" height="880" alt="image" src="https://github.com/user-attachments/assets/64f7b645-bcbf-42b1-bc00-f1e106f3590a" />
+
+
+- 休息页
+<img width="1919" height="887" alt="image" src="https://github.com/user-attachments/assets/f2a1b11c-686c-4854-9428-4aeac898c451" />
+
+
 
 ## 3. 项目功能
 
