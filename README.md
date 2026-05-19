@@ -1,5 +1,3 @@
-<img width="846" height="798" alt="image" src="https://github.com/user-attachments/assets/06cd888a-c8f0-4bbb-934a-b3621ee52eeb" /># AgentTest-All-u-Need · 前端
-
 ## 1. 项目介绍
 
 **AgentTest-All-u-Need**-你想要的一切测试。一个用于评测 AI 对话 Agent 的全栈系统前端。提供 Agent 管理、LLM 模型配置、题库管理、评测任务执行及报告可视化等完整功能，帮助团队系统化评估和对比不同 AI Agent 的表现。
