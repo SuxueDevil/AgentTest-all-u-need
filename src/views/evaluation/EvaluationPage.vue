@@ -424,15 +424,15 @@ const totalWeight = computed(() =>
         <!-- 选题 + 选Agent + 选LLM 并排 -->
         <div class="grid grid-cols-3 gap-3">
           <div class="space-y-1">
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">选择题目 <span class="text-xs text-gray-400">({{ form.questionIds.length }})</span></label>
-            <div class="max-h-48 overflow-y-auto space-y-0 border rounded-lg">
-              <div class="sticky top-0 z-10 bg-gray-50 dark:bg-ai-surface border-b px-2 py-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            <div class="flex items-center pl-2 pr-3">
+              <label class="text-sm font-medium text-gray-700 dark:text-gray-300">选择题目 <span class="text-xs text-gray-400">({{ form.questionIds.length }})</span></label>
+              <span class="text-xs text-ai-purple font-medium cursor-pointer hover:underline ml-auto"
                 @click="toggleAllQuestions"
               >
-                <span class="text-xs text-ai-purple font-medium">
-                  {{ form.questionIds.length === questionStore.questions.length ? '取消全选' : '全选' }}
-                </span>
-              </div>
+                {{ form.questionIds.length === questionStore.questions.length ? '取消全选' : '全选' }}
+              </span>
+            </div>
+            <div class="max-h-48 overflow-y-auto space-y-0 border rounded-lg">
               <div v-for="q in questionStore.questions" :key="q.id"
                 class="flex items-center gap-1.5 text-xs py-1 px-2 hover:bg-gray-50 dark:hover:bg-ai-surface cursor-pointer"
                 @click="toggleQuestion(q.id)"
