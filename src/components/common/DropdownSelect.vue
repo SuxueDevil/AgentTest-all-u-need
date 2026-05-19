@@ -67,13 +67,25 @@ const isPlaceholder = computed(() => props.modelValue === '' || props.modelValue
 
 // ==================== 定位 ====================
 
-/** 根据触发器 getBoundingClientRect 计算面板 fixed 定位 */
+/** 根据触发器位置计算面板定位，下方空间不足时自动上翻 */
 function updatePosition() {
   if (!triggerRef.value) return
   const rect = triggerRef.value.getBoundingClientRect()
-  panelStyle.value = {
-    top: (rect.bottom + 4) + 'px',
-    left: rect.left + 'px',
+  const estHeight = 280 // 预估面板最大高度（max-h-60 ≈ 240px + padding）
+  const spaceBelow = window.innerHeight - rect.bottom
+
+  if (spaceBelow < estHeight && rect.top > estHeight) {
+    // 下方不够，翻到触发器上方
+    panelStyle.value = {
+      top: (rect.top - 4) + 'px',
+      left: rect.left + 'px',
+      transform: 'translateY(-100%)',
+    }
+  } else {
+    panelStyle.value = {
+      top: (rect.bottom + 4) + 'px',
+      left: rect.left + 'px',
+    }
   }
 }
 
@@ -174,7 +186,7 @@ onUnmounted(() => {
         <div
           v-if="open"
           ref="panelRef"
-          class="fixed z-[100] rounded-xl border py-1 shadow-xl backdrop-blur-xl bg-white dark:bg-ai-card border-gray-200 dark:border-ai-border w-max"
+          class="fixed z-[100] rounded-xl border py-1 shadow-xl backdrop-blur-xl bg-white dark:bg-ai-card border-gray-200 dark:border-ai-border w-max max-h-60 overflow-y-auto"
           :style="panelStyle"
           @mouseenter="onPanelEnter"
           @mouseleave="onPanelLeave"
