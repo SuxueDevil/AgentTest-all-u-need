@@ -160,11 +160,20 @@ onMounted(() => {
  * 打开新建弹窗 — 清空表单和编辑目标。
  * 【Java 类比】≈ GET /agents/new → 返回空白表单
  */
+/** 新建 Agent 时预填的请求模板（格式化） */
+function defaultRequestBody() {
+  return `{
+  "model": "",
+  "stream": true,
+  "messages": {{messages}}
+}`
+}
+
 function openCreate() {
   formError.value = ''
   editTarget.value = null
   form.value = { name: '', description: '', model: '', type: 'llm',
-    endpointUrl: '', requestBody: '', responseProtocol: 'sse', responseContentPath: 'choices[0].delta.content', authType: 'none', authCredential: '' }
+    endpointUrl: '', requestBody: defaultRequestBody(), responseProtocol: 'sse', responseContentPath: 'choices[0].delta.content', authType: 'none', authCredential: '' }
   showCreateDialog.value = true
 }
 
@@ -397,7 +406,7 @@ function onPageChange(page: number) {
               <label class="text-sm font-medium text-gray-700 dark:text-gray-300">请求模板 JSON <span class="text-xs text-gray-400">（&#123;&#123;messages&#125;&#125; 占位符）</span></label>
               <button type="button" class="text-xs text-ai-purple hover:underline" @click="formatRequestBody">格式化</button>
             </div>
-            <textarea v-model="form.requestBody" class="input-field" rows="6" placeholder='{"model":"...","messages":{{messages}},"stream":true} — 留空使用默认格式' />
+            <textarea v-model="form.requestBody" class="input-field font-mono" rows="6" placeholder="留空使用默认 OpenAI 格式" />
           </div>
           <!-- 响应格式 -->
           <h3 class="text-sm font-bold text-gray-900 dark:text-white pt-2">● 响应格式</h3>
