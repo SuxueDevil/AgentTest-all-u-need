@@ -73,12 +73,6 @@
     box-shadow: 0 8px 32px rgba(124, 58, 237, 0.08);
   }
 
-  :is(.dark) .glass-card {
-    border-color: rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 8px 32px rgba(124, 58, 237, 0.08);
-  }
-
   html:not(.dark) .glass-card {
     border-color: rgba(255, 255, 255, 0.5);
     background: rgba(255, 255, 255, 0.35);
@@ -149,51 +143,52 @@
     background-clip: text;
   }
 
-  /** ──────────────── 按钮样式 ────────────────
-   * btn-primary:   主操作 — 白玻璃质感（页面 CTA / 弹窗确认）
-   * btn-secondary: 次要操作 — 灰底灰框毛玻璃（取消 / 返回 / 搜索）
+  /** ──────────────── 按钮 / 输入框 统一样式 ────────────────
+   * btn-secondary 与 input-field 视觉完全一致：
+   *   圆角 rounded-xl / 边框 + 毛玻璃背景 / hover 变紫
+   * 区别仅在于：
+   *   btn-secondary — inline-flex + gap-2（按钮图标排列）
+   *   input-field   — w-full + focus:ring（输入框通栏 + 聚焦提示）
    */
-
-  .btn-primary {
-    @apply inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200 active:scale-95;
-  }
-
-  /* 浅色 — 半透明白底 + 微弱阴影 */
-  html:not(.dark) .btn-primary {
-    @apply text-gray-800 border border-white/60;
-    background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.25));
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.7);
-  }
-
-  /* 浅色悬停 — 提亮背景 + 阴影加深 */
-  html:not(.dark) .btn-primary:hover {
-    background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8);
-  }
-
-  /* 深色 — 黑色半透明底 + 白字 */
-  :is(.dark) .btn-primary {
-    @apply bg-black/25 text-white border border-white/10 shadow-sm;
-  }
-
-  /* 深色悬停 — 加深底色 */
-  :is(.dark) .btn-primary:hover {
-    @apply bg-black/40 border-white/20;
-  }
 
   .btn-secondary {
     @apply inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium transition-all duration-200;
   }
 
-  /* 深色 — 深色底 + 灰字，悬停变紫 */
   :is(.dark) .btn-secondary {
-    @apply border-ai-border bg-ai-card text-gray-300 hover:border-ai-purple/30 hover:text-white;
+    @apply border-ai-border bg-ai-card text-gray-300 hover:border-ai-purple/30 hover:text-white disabled:opacity-40;
   }
 
-  /* 浅色 — 半透明白底 + 灰字毛玻璃，悬停边框变紫 */
   html:not(.dark) .btn-secondary {
-    @apply border-gray-300 bg-white/60 text-gray-700 hover:border-ai-purple/50 hover:text-ai-purple;
+    @apply border-gray-300 bg-white/60 text-gray-700 hover:border-ai-purple/50 hover:text-ai-purple disabled:opacity-40;
     backdrop-filter: blur(8px);
+  }
+
+  .input-field {
+    @apply w-full rounded-xl border pl-4 pr-8 py-2 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ai-purple/30;
+  }
+
+  :is(.dark) .input-field {
+    @apply border-ai-border bg-ai-card text-gray-300 placeholder:text-gray-500 hover:border-ai-purple/30;
+  }
+
+  html:not(.dark) .input-field {
+    @apply border-gray-300 bg-white/60 text-gray-700 placeholder:text-gray-400 hover:border-ai-purple/50;
+    backdrop-filter: blur(8px);
+  }
+
+  /* 移除原生下拉箭头，用内联 SVG 替代，确保位置可控 */
+  select.input-field {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 0.75rem;
+  }
+
+  :is(.dark) select.input-field {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   }
 
   /* ===== Badges — 状态标签 ===== */
@@ -215,19 +210,6 @@
 
   .badge-info {
     @apply badge bg-ai-purple/20 text-ai-purple-light;
-  }
-
-  /* ===== Form Input — 输入框 / 下拉框 / 文本域 ===== */
-  .input-field {
-    @apply w-full rounded-lg border px-3 py-2 text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ai-purple/30;
-  }
-
-  :is(.dark) .input-field {
-    @apply bg-ai-surface border-ai-border text-white placeholder:text-gray-500;
-  }
-
-  html:not(.dark) .input-field {
-    @apply bg-white border-gray-300 text-gray-900 placeholder:text-gray-400;
   }
 }
 
