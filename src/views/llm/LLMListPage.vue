@@ -160,7 +160,7 @@ function onPageChange(page: number) {
         </div>
         <div class="flex justify-end gap-3 pt-2">
           <button class="btn-secondary" @click="showCreateDialog = false">取消</button>
-          <button class="btn-primary" :disabled="submitting || !form.name || !form.model" @click="handleSubmit">{{ submitting ? '保存中...' : '保存' }}</button>
+          <button class="btn-secondary" :disabled="submitting || !form.name || !form.model" @click="handleSubmit">{{ submitting ? '保存中...' : '保存' }}</button>
         </div>
       </div>
     </div>

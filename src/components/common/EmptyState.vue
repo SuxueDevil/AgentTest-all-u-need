@@ -6,7 +6,7 @@
 
   使用示例:
     <EmptyState :icon="FileText" title="暂无数据" description="去创建第一条记录吧">
-      <button class="btn-primary">新建</button>
+      <button class="btn-secondary">新建</button>
     </EmptyState>
 -->
 <script setup lang="ts">

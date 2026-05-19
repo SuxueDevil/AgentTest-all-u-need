@@ -52,7 +52,7 @@ const emit = defineEmits<{
           :class="{
             'bg-red-500 hover:bg-red-600 text-white': variant === 'danger',
             'bg-ai-purple hover:bg-ai-purple/80 text-white': variant === 'primary',
-            'btn-primary': variant === 'default' || !variant,
+            'btn-secondary': variant === 'default' || !variant,
           }"
           :disabled="loading"
           @click="emit('confirm')"

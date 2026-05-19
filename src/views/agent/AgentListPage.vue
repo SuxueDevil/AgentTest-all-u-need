@@ -248,7 +248,7 @@ function onPageChange(page: number) {
           v-model="searchKeyword"
           type="text"
           placeholder="搜索Agent名称..."
-          class="w-full rounded-lg border border-gray-200 dark:border-ai-border bg-white dark:bg-ai-card pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ai-purple/30"
+          class="input-field pl-9"
           @keyup.enter="onSearch"
         />
       </div>

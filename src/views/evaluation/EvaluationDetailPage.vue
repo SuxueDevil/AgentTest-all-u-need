@@ -138,7 +138,7 @@ const sortedResults = computed(() =>
         </div>
         <div class="flex gap-2">
           <button v-if="evalStore.currentTask.status === 'pending'"
-            class="btn-primary text-sm" @click="handleStart">
+            class="btn-secondary text-sm" @click="handleStart">
             <Play :size="14" /> 启动评测
           </button>
           <button v-if="evalStore.currentTask.status === 'running'"

@@ -292,7 +292,7 @@ const deleteMessage = computed(() => {
         <Search :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         <input
           v-model="searchKeyword" type="text" placeholder="搜索问题标题..."
-          class="w-full rounded-lg border border-gray-200 dark:border-ai-border bg-white dark:bg-ai-card pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ai-purple/30"
+          class="input-field pl-9"
           @keyup.enter="onSearch"
         />
       </div>
@@ -304,7 +304,7 @@ const deleteMessage = computed(() => {
         <option value="">全部难度</option>
         <option v-for="(label, key) in difficultyLabels" :key="key" :value="key">{{ label }}</option>
       </select>
-      <select v-model="filterType" class="input-field w-24 text-sm" @change="onSearch">
+      <select v-model="filterType" class="input-field w-28 text-sm" @change="onSearch">
         <option value="">全部类型</option>
         <option value="single">单轮</option>
         <option value="multi">多轮</option>
@@ -471,7 +471,7 @@ const deleteMessage = computed(() => {
         <!-- 按钮 -->
         <div class="flex justify-end gap-3 pt-2">
           <button class="btn-secondary" @click="showCreateDialog = false">取消</button>
-          <button class="btn-primary" :disabled="submitting || !form.title" @click="handleSubmit">
+          <button class="btn-secondary" :disabled="submitting || !form.title" @click="handleSubmit">
             {{ submitting ? '保存中...' : '保存' }}
           </button>
         </div>
@@ -494,7 +494,7 @@ const deleteMessage = computed(() => {
         </div>
         <div class="flex justify-end gap-3 pt-2">
           <button class="btn-secondary" @click="showImportDialog = false">关闭</button>
-          <button class="btn-primary" :disabled="submitting" @click="handleImport">
+          <button class="btn-secondary" :disabled="submitting" @click="handleImport">
             {{ submitting ? '导入中...' : '上传并导入' }}
           </button>
         </div>
