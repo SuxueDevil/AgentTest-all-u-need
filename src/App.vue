@@ -17,7 +17,7 @@ import AppLayout from '@layouts/AppLayout.vue'
 }
 
 @keyframes page-in {
-  from { opacity: 0; transform: translateY(0.5px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 </style>

@@ -159,6 +159,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <div>
   <!-- 落樱动画 — 粉色细碎花瓣 -->
   <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
     <div v-for="i in 40" :key="i"
@@ -278,6 +279,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  </div> <!-- 单根包裹，确保 page-animate 过渡动画生效 -->
 </template>
 
 <style scoped>
