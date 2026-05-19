@@ -225,7 +225,7 @@ async function handleSubmit() {
       responseProtocol: form.value.responseProtocol,
       responseContentPath: form.value.responseContentPath,
       authType: form.value.authType,
-      authCredential: form.value.authCredential,
+      authCredential: form.value.authCredential || !editTarget.value ? form.value.authCredential : undefined,
     }
     if (editTarget.value) {
       await agentStore.updateAgent(editTarget.value.id, payload)
